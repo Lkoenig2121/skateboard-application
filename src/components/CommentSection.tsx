@@ -9,9 +9,16 @@ interface CommentSectionProps {
   videoId: string;
 }
 
-function formatTimeAgo(date: Date): string {
+function formatTimeAgo(date: Date | string): string {
   const now = new Date();
-  const diffInMs = now.getTime() - date.getTime();
+  const commentDate = date instanceof Date ? date : new Date(date);
+  
+  // Check if the date is valid
+  if (isNaN(commentDate.getTime())) {
+    return "recently";
+  }
+  
+  const diffInMs = now.getTime() - commentDate.getTime();
   const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
 
   if (diffInMinutes < 1) {
@@ -35,29 +42,65 @@ interface CommentItemProps {
 function CommentItem({ comment, onReply }: CommentItemProps) {
   const [isLiked, setIsLiked] = useState(false);
   const [showReplyForm, setShowReplyForm] = useState(false);
+  const [replyText, setReplyText] = useState("");
 
   return (
-    <div className="yt-comment">
-      <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+    <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
+      <div style={{
+        width: '40px',
+        height: '40px',
+        background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)',
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        fontWeight: '600',
+        fontSize: '14px',
+        flexShrink: 0
+      }}>
         {comment.user.username.charAt(0).toUpperCase()}
       </div>
 
-      <div className="yt-comment-content">
-        <div className="flex items-center space-x-2 mb-1">
-          <span className="yt-comment-author">@{comment.user.username}</span>
-          <span className="text-xs text-gray-500">
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+          <span style={{ fontWeight: '500', fontSize: '13px', color: '#111827' }}>
+            @{comment.user.username}
+          </span>
+          <span style={{ fontSize: '12px', color: '#6b7280' }}>
             {formatTimeAgo(comment.createdAt)}
           </span>
         </div>
 
-        <p className="yt-comment-text">{comment.content}</p>
+        <p style={{
+          fontSize: '14px',
+          color: '#111827',
+          lineHeight: '1.4',
+          marginBottom: '8px',
+          wordBreak: 'break-word'
+        }}>
+          {comment.content}
+        </p>
 
-        <div className="yt-comment-actions">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <button
             onClick={() => setIsLiked(!isLiked)}
-            className={`flex items-center space-x-1 hover:bg-gray-100 rounded p-2 transition-colors ${
-              isLiked ? "text-blue-600" : "text-gray-600"
-            }`}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 12px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              borderRadius: '20px',
+              cursor: 'pointer',
+              color: isLiked ? '#3b82f6' : '#6b7280',
+              fontSize: '12px',
+              fontWeight: '500',
+              transition: 'background-color 0.2s'
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f3f4f6')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
           >
             <ThumbsUp size={16} />
             <span>{comment.likeCount + (isLiked ? 1 : 0)}</span>
@@ -65,7 +108,22 @@ function CommentItem({ comment, onReply }: CommentItemProps) {
 
           <button
             onClick={() => setShowReplyForm(!showReplyForm)}
-            className="flex items-center space-x-1 hover:bg-gray-100 rounded p-2 transition-colors"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 12px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              borderRadius: '20px',
+              cursor: 'pointer',
+              color: '#6b7280',
+              fontSize: '12px',
+              fontWeight: '500',
+              transition: 'background-color 0.2s'
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f3f4f6')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
           >
             <Reply size={16} />
             <span>Reply</span>
@@ -73,25 +131,85 @@ function CommentItem({ comment, onReply }: CommentItemProps) {
         </div>
 
         {showReplyForm && (
-          <div className="mt-3">
-            <div className="flex space-x-3">
-              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                <User size={16} className="text-gray-600" />
+          <div style={{ marginTop: '12px' }}>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                backgroundColor: '#e5e7eb',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}>
+                <User size={16} style={{ color: '#6b7280' }} />
               </div>
-              <div className="flex-1">
+              <div style={{ flex: 1 }}>
                 <textarea
-                  placeholder={`Reply to ${comment.user.username}...`}
-                  className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                  rows={3}
+                  value={replyText}
+                  onChange={(e) => setReplyText(e.target.value)}
+                  placeholder={`Reply to @${comment.user.username}...`}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '8px',
+                    resize: 'vertical',
+                    minHeight: '60px',
+                    fontSize: '14px',
+                    outline: 'none',
+                    transition: 'border-color 0.2s'
+                  }}
+                  onFocus={(e) => (e.target.style.borderColor = '#3b82f6')}
+                  onBlur={(e) => (e.target.style.borderColor = '#d1d5db')}
                 />
-                <div className="flex justify-end space-x-2 mt-2">
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px' }}>
                   <button
-                    onClick={() => setShowReplyForm(false)}
-                    className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+                    onClick={() => {
+                      setShowReplyForm(false);
+                      setReplyText("");
+                    }}
+                    style={{
+                      padding: '6px 16px',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      color: '#6b7280',
+                      backgroundColor: 'transparent',
+                      border: 'none',
+                      borderRadius: '20px',
+                      cursor: 'pointer',
+                      transition: 'color 0.2s'
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = '#111827')}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = '#6b7280')}
                   >
                     Cancel
                   </button>
-                  <button className="px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary/90 transition-colors">
+                  <button
+                    disabled={!replyText.trim()}
+                    style={{
+                      padding: '6px 16px',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      color: 'white',
+                      backgroundColor: replyText.trim() ? '#3b82f6' : '#9ca3af',
+                      border: 'none',
+                      borderRadius: '20px',
+                      cursor: replyText.trim() ? 'pointer' : 'not-allowed',
+                      transition: 'background-color 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (replyText.trim()) {
+                        e.currentTarget.style.backgroundColor = '#2563eb';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (replyText.trim()) {
+                        e.currentTarget.style.backgroundColor = '#3b82f6';
+                      }
+                    }}
+                  >
                     Reply
                   </button>
                 </div>
@@ -101,7 +219,7 @@ function CommentItem({ comment, onReply }: CommentItemProps) {
         )}
 
         {comment.replies && comment.replies.length > 0 && (
-          <div className="mt-4 space-y-4">
+          <div style={{ marginTop: '16px', paddingLeft: '16px', borderLeft: '2px solid #f3f4f6' }}>
             {comment.replies.map((reply) => (
               <CommentItem key={reply.id} comment={reply} />
             ))}
@@ -118,6 +236,7 @@ export default function CommentSection({
 }: CommentSectionProps) {
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showCommentForm, setShowCommentForm] = useState(false);
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,55 +249,122 @@ export default function CommentSection({
     setTimeout(() => {
       setNewComment("");
       setIsSubmitting(false);
+      setShowCommentForm(false);
       // You would also add the new comment to the comments list
     }, 1000);
   };
 
   return (
-    <div className="mt-8">
-      <h3 className="text-lg font-medium text-gray-900 mb-6">
+    <div style={{ marginTop: '32px' }}>
+      <h3 style={{
+        fontSize: '20px',
+        fontWeight: '600',
+        color: '#111827',
+        marginBottom: '24px'
+      }}>
         {comments.length} Comments
       </h3>
 
       {/* Add Comment Form */}
-      <form onSubmit={handleSubmitComment} className="mb-8">
-        <div className="flex space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+      <div style={{ marginBottom: '32px' }}>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            background: 'linear-gradient(135deg, #10b981, #3b82f6)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontWeight: '600',
+            fontSize: '14px',
+            flexShrink: 0
+          }}>
             U
           </div>
-          <div className="flex-1">
+          <div style={{ flex: 1 }}>
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
+              onFocus={() => setShowCommentForm(true)}
               placeholder="Add a comment..."
-              className="w-full p-2 border-b border-gray-300 bg-transparent resize-none focus:outline-none focus:border-gray-600"
-              rows={1}
+              style={{
+                width: '100%',
+                padding: showCommentForm ? '8px 0' : '4px 0',
+                border: 'none',
+                borderBottom: showCommentForm ? '2px solid #3b82f6' : '1px solid #d1d5db',
+                backgroundColor: 'transparent',
+                resize: 'none',
+                outline: 'none',
+                fontSize: '14px',
+                minHeight: showCommentForm ? '60px' : '20px',
+                transition: 'all 0.2s'
+              }}
+              rows={showCommentForm ? 3 : 1}
             />
-            <div className="flex justify-end mt-3 space-x-2">
-              <button
-                type="button"
-                onClick={() => setNewComment("")}
-                className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={!newComment.trim() || isSubmitting}
-                className="px-4 py-2 bg-blue-600 text-white rounded-full text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                {isSubmitting ? "Commenting..." : "Comment"}
-              </button>
-            </div>
+            {showCommentForm && (
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '12px' }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNewComment("");
+                    setShowCommentForm(false);
+                  }}
+                  style={{
+                    padding: '8px 16px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    color: '#6b7280',
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    borderRadius: '20px',
+                    cursor: 'pointer',
+                    transition: 'color 0.2s'
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#111827')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = '#6b7280')}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSubmitComment}
+                  disabled={!newComment.trim() || isSubmitting}
+                  style={{
+                    padding: '8px 16px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    color: 'white',
+                    backgroundColor: newComment.trim() && !isSubmitting ? '#3b82f6' : '#9ca3af',
+                    border: 'none',
+                    borderRadius: '20px',
+                    cursor: newComment.trim() && !isSubmitting ? 'pointer' : 'not-allowed',
+                    transition: 'background-color 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (newComment.trim() && !isSubmitting) {
+                      e.currentTarget.style.backgroundColor = '#2563eb';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (newComment.trim() && !isSubmitting) {
+                      e.currentTarget.style.backgroundColor = '#3b82f6';
+                    }
+                  }}
+                >
+                  {isSubmitting ? "Commenting..." : "Comment"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
-      </form>
+      </div>
 
       {/* Comments List */}
-      <div className="space-y-6">
+      <div>
         {comments.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-gray-600">
+          <div style={{ textAlign: 'center', padding: '32px 0' }}>
+            <p style={{ color: '#6b7280', fontSize: '16px' }}>
               No comments yet. Be the first to comment!
             </p>
           </div>
