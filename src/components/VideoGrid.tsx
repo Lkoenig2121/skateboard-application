@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import VideoCard from "./VideoCard";
 import { Video } from "@/types";
 
@@ -8,11 +9,34 @@ interface VideoGridProps {
 }
 
 export default function VideoGrid({ videos }: VideoGridProps) {
+  const [columns, setColumns] = useState(1);
+
+  useEffect(() => {
+    const updateColumns = () => {
+      const width = window.innerWidth;
+      if (width >= 1280) {
+        setColumns(4); // Large desktop: 4 columns
+      } else if (width >= 1024) {
+        setColumns(3); // Desktop: 3 columns
+      } else if (width >= 768) {
+        setColumns(2); // Tablet: 2 columns
+      } else {
+        setColumns(1); // Mobile: 1 column
+      }
+    };
+
+    updateColumns();
+    window.addEventListener("resize", updateColumns);
+    return () => window.removeEventListener("resize", updateColumns);
+  }, []);
+
   if (videos.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-600 text-lg mb-4">No videos found</p>
-        <p className="text-gray-500">
+      <div style={{ textAlign: "center", padding: "48px 0" }}>
+        <p style={{ color: "#6b7280", fontSize: "18px", marginBottom: "16px" }}>
+          No videos found
+        </p>
+        <p style={{ color: "#9ca3af" }}>
           Try adjusting your search or category filter
         </p>
       </div>
@@ -20,7 +44,14 @@ export default function VideoGrid({ videos }: VideoGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-x-4 gap-y-6">
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: `repeat(${columns}, 1fr)`,
+        gap: columns === 1 ? "16px" : columns === 2 ? "20px" : "24px",
+        width: "100%",
+      }}
+    >
       {videos.map((video) => (
         <VideoCard key={video.id} video={video} />
       ))}

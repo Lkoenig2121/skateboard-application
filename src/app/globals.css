@@ -133,4 +133,42 @@ body {
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  /* Video Grid Responsive Layout */
+  .video-grid-responsive {
+    display: grid;
+    gap: 16px;
+    width: 100%;
+  }
+
+  /* Mobile: 1 column */
+  @media (max-width: 767px) {
+    .video-grid-responsive {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Tablet: 2 columns */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .video-grid-responsive {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+  }
+
+  /* Desktop: 3 columns */
+  @media (min-width: 1024px) and (max-width: 1279px) {
+    .video-grid-responsive {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+  }
+
+  /* Large Desktop: 4 columns */
+  @media (min-width: 1280px) {
+    .video-grid-responsive {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+  }
 }
