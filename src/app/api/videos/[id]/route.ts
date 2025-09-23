@@ -7,7 +7,8 @@ const YOUTUBE_API_BASE_URL = 'https://www.googleapis.com/youtube/v3';
 
 // Helper to convert ISO 8601 duration to seconds
 function convertISO8601ToSeconds(iso8601Duration: string): number {
-  const durationRegex = /P(?:(\d+)D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
+  // Updated regex to handle fractional seconds (e.g., PT3M45.5S) and days
+  const durationRegex = /P(?:(\d+)D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?/;
   const matches = iso8601Duration.match(durationRegex);
 
   if (!matches) return 0;
@@ -15,9 +16,10 @@ function convertISO8601ToSeconds(iso8601Duration: string): number {
   const days = parseInt(matches[1] || '0', 10);
   const hours = parseInt(matches[2] || '0', 10);
   const minutes = parseInt(matches[3] || '0', 10);
-  const seconds = parseInt(matches[4] || '0', 10);
+  const seconds = parseFloat(matches[4] || '0'); // Use parseFloat to handle decimal seconds
 
-  return days * 86400 + hours * 3600 + minutes * 60 + seconds;
+  // Round up to the nearest second to ensure videos don't end early
+  return days * 86400 + hours * 3600 + minutes * 60 + Math.ceil(seconds);
 }
 
 export async function GET(

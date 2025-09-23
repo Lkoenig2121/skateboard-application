@@ -43,14 +43,16 @@ interface VideoDetailsResponse {
 
 // Function to convert ISO 8601 duration to seconds
 function convertDuration(duration: string): number {
-  const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+  // Updated regex to handle fractional seconds (e.g., PT3M45.5S)
+  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?/);
   if (!match) return 0;
   
-  const hours = (match[1] || '').replace('H', '') || '0';
-  const minutes = (match[2] || '').replace('M', '') || '0';
-  const seconds = (match[3] || '').replace('S', '') || '0';
+  const hours = parseInt(match[1] || '0', 10);
+  const minutes = parseInt(match[2] || '0', 10);
+  const seconds = parseFloat(match[3] || '0'); // Use parseFloat to handle decimal seconds
   
-  return parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds);
+  // Round up to the nearest second to ensure videos don't end early
+  return hours * 3600 + minutes * 60 + Math.ceil(seconds);
 }
 
 export async function GET(request: NextRequest) {
