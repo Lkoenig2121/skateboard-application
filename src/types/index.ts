@@ -5,8 +5,8 @@ export interface User {
   avatar?: string;
   bio?: string;
   subscriberCount: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }
 
 export interface Video {
@@ -23,8 +23,8 @@ export interface Video {
   tags: string[];
   userId: string;
   user: User;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }
 
 export interface Comment {
