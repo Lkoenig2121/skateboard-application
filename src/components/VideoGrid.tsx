@@ -10,24 +10,29 @@ interface VideoGridProps {
 
 export default function VideoGrid({ videos }: VideoGridProps) {
   const [columns, setColumns] = useState(1);
+  const [gap, setGap] = useState('16px');
 
   useEffect(() => {
-    const updateColumns = () => {
+    const updateLayout = () => {
       const width = window.innerWidth;
       if (width >= 1280) {
         setColumns(4); // Large desktop: 4 columns
+        setGap('24px');
       } else if (width >= 1024) {
         setColumns(3); // Desktop: 3 columns
+        setGap('20px');
       } else if (width >= 768) {
         setColumns(2); // Tablet: 2 columns
+        setGap('18px');
       } else {
         setColumns(1); // Mobile: 1 column
+        setGap('16px');
       }
     };
 
-    updateColumns();
-    window.addEventListener("resize", updateColumns);
-    return () => window.removeEventListener("resize", updateColumns);
+    updateLayout();
+    window.addEventListener("resize", updateLayout);
+    return () => window.removeEventListener("resize", updateLayout);
   }, []);
 
   if (videos.length === 0) {
@@ -48,7 +53,7 @@ export default function VideoGrid({ videos }: VideoGridProps) {
       style={{
         display: "grid",
         gridTemplateColumns: `repeat(${columns}, 1fr)`,
-        gap: columns === 1 ? "16px" : columns === 2 ? "20px" : "24px",
+        gap: gap,
         width: "100%",
       }}
     >

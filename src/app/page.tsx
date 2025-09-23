@@ -124,9 +124,9 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       <Header onSearch={setSearchQuery} />
 
-      <main className="max-w-screen-2xl mx-auto px-4 lg:px-6 py-6">
+      <main className="max-w-screen-2xl mx-auto px-4 lg:px-6 py-8">
         {/* Category Filter */}
-        <div className="mb-6">
+        <div className="mb-8 lg:mb-10">
           <CategoryFilter
             selectedCategory={selectedCategory}
             onCategoryChange={setSelectedCategory}
