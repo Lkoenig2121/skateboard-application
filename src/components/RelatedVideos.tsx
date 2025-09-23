@@ -24,9 +24,16 @@ function formatViewCount(count: number): string {
   return count.toString();
 }
 
-function formatTimeAgo(date: Date): string {
+function formatTimeAgo(date: Date | string): string {
   const now = new Date();
-  const diffInMs = now.getTime() - date.getTime();
+  const videoDate = date instanceof Date ? date : new Date(date);
+  
+  // Check if the date is valid
+  if (isNaN(videoDate.getTime())) {
+    return "recently";
+  }
+  
+  const diffInMs = now.getTime() - videoDate.getTime();
   const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 
   if (diffInDays === 0) {

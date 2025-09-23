@@ -1,67 +1,101 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import axios from 'axios';
+import { Video } from '@/types';
 
-// Mock data - in a real app, this would come from a database
-const mockVideo = {
-  id: '1',
-  title: 'Epic Skateboard Tricks at Venice Beach',
-  description: `Amazing skateboard tricks and stunts at the famous Venice Beach skate park. In this video, you'll see some incredible moves including kickflips, ollies, and rail grinds.
+const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
+const YOUTUBE_API_BASE_URL = 'https://www.googleapis.com/youtube/v3';
 
-The Venice Beach skate park is one of the most iconic spots for skateboarding, and this session really shows why.
+// Helper to convert ISO 8601 duration to seconds
+function convertISO8601ToSeconds(iso8601Duration: string): number {
+  const durationRegex = /P(?:(\d+)D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
+  const matches = iso8601Duration.match(durationRegex);
 
-Join us as we explore the park and showcase some of the best tricks you'll see anywhere. Whether you're a beginner or a pro, there's something here for everyone to enjoy and learn from.
+  if (!matches) return 0;
 
-Don't forget to like and subscribe for more awesome skateboarding content!`,
-  thumbnail: '/api/placeholder/400/225',
-  videoUrl: '/videos/sample1.mp4',
-  duration: 180,
-  viewCount: 1250,
-  likeCount: 89,
-  dislikeCount: 3,
-  category: 'skateboarding',
-  tags: ['skateboarding', 'venice beach', 'tricks', 'street'],
-  userId: '1',
-  user: {
-    id: '1',
-    username: 'skater_pro',
-    email: 'skater@example.com',
-    avatar: '/api/placeholder/40/40',
-    bio: 'Professional skateboarder and content creator. Skateboarding since 2010.',
-    subscriberCount: 5420,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+  const days = parseInt(matches[1] || '0', 10);
+  const hours = parseInt(matches[2] || '0', 10);
+  const minutes = parseInt(matches[3] || '0', 10);
+  const seconds = parseInt(matches[4] || '0', 10);
+
+  return days * 86400 + hours * 3600 + minutes * 60 + seconds;
+}
 
 export async function GET(
-  request: NextRequest,
+  request: Request,
   { params }: { params: { id: string } }
 ) {
-  const { id } = params;
+  const videoId = params.id;
 
-  // In a real app, you would fetch the video from the database
-  // For now, we'll return the mock video for any ID
-  
-  if (!id) {
-    return NextResponse.json(
-      { error: 'Video ID is required' },
-      { status: 400 }
-    );
+  if (!YOUTUBE_API_KEY) {
+    return NextResponse.json({ error: 'YouTube API key not configured' }, { status: 500 });
   }
 
-  // Simulate incrementing view count
-  const video = {
-    ...mockVideo,
-    id,
-    viewCount: mockVideo.viewCount + 1,
-  };
+  try {
+    // Fetch video details from YouTube API
+    const videoResponse = await axios.get(`${YOUTUBE_API_BASE_URL}/videos`, {
+      params: {
+        key: YOUTUBE_API_KEY,
+        id: videoId,
+        part: 'snippet,contentDetails,statistics',
+      },
+    });
 
-  return NextResponse.json({ video });
+    if (!videoResponse.data.items || videoResponse.data.items.length === 0) {
+      return NextResponse.json({ error: 'Video not found' }, { status: 404 });
+    }
+
+    const item = videoResponse.data.items[0];
+
+    // Fetch channel details
+    const channelResponse = await axios.get(`${YOUTUBE_API_BASE_URL}/channels`, {
+      params: {
+        key: YOUTUBE_API_KEY,
+        id: item.snippet.channelId,
+        part: 'snippet,statistics',
+      },
+    });
+
+    const channelData = channelResponse.data.items?.[0];
+
+    const video: Video = {
+      id: item.id,
+      title: item.snippet.title,
+      description: item.snippet.description,
+      thumbnail: item.snippet.thumbnails.maxres?.url || item.snippet.thumbnails.high?.url || item.snippet.thumbnails.medium?.url,
+      videoUrl: `https://www.youtube.com/watch?v=${item.id}`,
+      duration: convertISO8601ToSeconds(item.contentDetails.duration),
+      viewCount: parseInt(item.statistics.viewCount || '0', 10),
+      likeCount: parseInt(item.statistics.likeCount || '0', 10),
+      dislikeCount: 0, // YouTube API no longer provides public dislike count
+      category: 'skateboarding', // Default since we're focusing on skateboarding content
+      tags: item.snippet.tags || [],
+      userId: item.snippet.channelId,
+      user: {
+        id: item.snippet.channelId,
+        username: item.snippet.channelTitle,
+        email: '', // Not available from YouTube API
+        avatar: channelData?.snippet?.thumbnails?.default?.url,
+        bio: channelData?.snippet?.description,
+        subscriberCount: parseInt(channelData?.statistics?.subscriberCount || '0', 10),
+        createdAt: new Date(channelData?.snippet?.publishedAt || item.snippet.publishedAt),
+        updatedAt: new Date(channelData?.snippet?.publishedAt || item.snippet.publishedAt),
+      },
+      createdAt: new Date(item.snippet.publishedAt),
+      updatedAt: new Date(item.snippet.publishedAt),
+    };
+
+    return NextResponse.json({ video });
+  } catch (error: any) {
+    console.error('YouTube API error:', error.response?.data || error.message);
+    return NextResponse.json(
+      { error: error.response?.data?.error?.message || 'Failed to fetch video from YouTube API' },
+      { status: error.response?.status || 500 }
+    );
+  }
 }
 
 export async function PUT(
-  request: NextRequest,
+  request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -71,26 +105,27 @@ export async function PUT(
 
     // In a real app, you would:
     // 1. Authenticate the user
-    // 2. Update the video in the database
+    // 2. Update the video interaction in your database
     // 3. Handle different actions (like, dislike, view, etc.)
+    // Note: We can't actually update YouTube's like/dislike counts via API
 
     switch (action) {
       case 'like':
         return NextResponse.json({
-          message: 'Video liked successfully',
-          likeCount: mockVideo.likeCount + (value ? 1 : -1),
+          message: 'Like action recorded',
+          success: true,
         });
 
       case 'dislike':
         return NextResponse.json({
-          message: 'Video disliked successfully',
-          dislikeCount: mockVideo.dislikeCount + (value ? 1 : -1),
+          message: 'Dislike action recorded',
+          success: true,
         });
 
       case 'view':
         return NextResponse.json({
-          message: 'View count updated',
-          viewCount: mockVideo.viewCount + 1,
+          message: 'View recorded',
+          success: true,
         });
 
       default:
@@ -100,9 +135,9 @@ export async function PUT(
         );
     }
   } catch (error) {
-    console.error('Error updating video:', error);
+    console.error('Error handling video interaction:', error);
     return NextResponse.json(
-      { error: 'Failed to update video' },
+      { error: 'Failed to process video interaction' },
       { status: 500 }
     );
   }
