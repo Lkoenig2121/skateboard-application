@@ -27,12 +27,12 @@ function formatViewCount(count: number): string {
 
 function formatDate(date: Date | string): string {
   const videoDate = date instanceof Date ? date : new Date(date);
-  
+
   // Check if the date is valid
   if (isNaN(videoDate.getTime())) {
     return "Date unavailable";
   }
-  
+
   return videoDate.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -71,81 +71,124 @@ export default function VideoInfo({ video }: VideoInfoProps) {
       : video.description;
 
   return (
-    <div style={{ padding: '16px 0' }}>
+    <div style={{ padding: "16px 0" }}>
       {/* Title */}
-      <h1 style={{
-        fontSize: '20px',
-        fontWeight: '600',
-        color: '#111827',
-        marginBottom: '12px',
-        lineHeight: '1.3'
-      }}>
+      <h1
+        style={{
+          fontSize: "20px",
+          fontWeight: "600",
+          color: "#ffffff",
+          marginBottom: "12px",
+          lineHeight: "1.3",
+        }}
+      >
         {video.title}
       </h1>
 
       {/* Video Meta and Actions */}
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: '24px',
-        gap: '16px'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: '#6b7280' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '14px' }}>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: "24px",
+          gap: "16px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "16px",
+            color: "#cccccc",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              fontSize: "14px",
+            }}
+          >
             <Eye size={16} />
             <span>{formatViewCount(video.viewCount)} views</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '14px' }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              fontSize: "14px",
+            }}
+          >
             <Calendar size={16} />
             <span>{formatDate(video.createdAt)}</span>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            backgroundColor: '#f3f4f6',
-            borderRadius: '20px',
-            overflow: 'hidden'
-          }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              backgroundColor: "#2a2a2a",
+              borderRadius: "20px",
+              overflow: "hidden",
+            }}
+          >
             <button
               onClick={handleLike}
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '8px 16px',
-                backgroundColor: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                color: isLiked ? '#3b82f6' : '#374151',
-                fontSize: '14px',
-                fontWeight: '500',
-                transition: 'background-color 0.2s'
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "8px 16px",
+                backgroundColor: "transparent",
+                border: "none",
+                cursor: "pointer",
+                color: isLiked ? "#3b82f6" : "#ffffff",
+                fontSize: "14px",
+                fontWeight: "500",
+                transition: "background-color 0.2s",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#e5e7eb')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#3a3a3a")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
             >
               <ThumbsUp size={20} />
-              <span>{formatViewCount(video.likeCount + (isLiked ? 1 : 0))}</span>
+              <span>
+                {formatViewCount(video.likeCount + (isLiked ? 1 : 0))}
+              </span>
             </button>
-            <div style={{ width: '1px', height: '24px', backgroundColor: '#d1d5db' }}></div>
+            <div
+              style={{
+                width: "1px",
+                height: "24px",
+                backgroundColor: "#d1d5db",
+              }}
+            ></div>
             <button
               onClick={handleDislike}
               style={{
-                padding: '8px 16px',
-                backgroundColor: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                color: isDisliked ? '#3b82f6' : '#374151',
-                transition: 'background-color 0.2s'
+                padding: "8px 16px",
+                backgroundColor: "transparent",
+                border: "none",
+                cursor: "pointer",
+                color: isDisliked ? "#3b82f6" : "#374151",
+                transition: "background-color 0.2s",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#e5e7eb')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#3a3a3a")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
             >
               <ThumbsDown size={20} />
             </button>
@@ -154,21 +197,25 @@ export default function VideoInfo({ video }: VideoInfoProps) {
           <button
             onClick={handleShare}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '8px 16px',
-              backgroundColor: '#f3f4f6',
-              border: 'none',
-              borderRadius: '20px',
-              cursor: 'pointer',
-              color: '#374151',
-              fontSize: '14px',
-              fontWeight: '500',
-              transition: 'background-color 0.2s'
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "8px 16px",
+              backgroundColor: "#2a2a2a",
+              border: "none",
+              borderRadius: "20px",
+              cursor: "pointer",
+              color: "#ffffff",
+              fontSize: "14px",
+              fontWeight: "500",
+              transition: "background-color 0.2s",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#e5e7eb')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#f3f4f6')}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#e5e7eb")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "#2a2a2a")
+            }
           >
             <Share size={16} />
             <span>Share</span>
@@ -176,21 +223,25 @@ export default function VideoInfo({ video }: VideoInfoProps) {
 
           <button
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '8px 16px',
-              backgroundColor: '#f3f4f6',
-              border: 'none',
-              borderRadius: '20px',
-              cursor: 'pointer',
-              color: '#374151',
-              fontSize: '14px',
-              fontWeight: '500',
-              transition: 'background-color 0.2s'
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "8px 16px",
+              backgroundColor: "#2a2a2a",
+              border: "none",
+              borderRadius: "20px",
+              cursor: "pointer",
+              color: "#ffffff",
+              fontSize: "14px",
+              fontWeight: "500",
+              transition: "background-color 0.2s",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#e5e7eb')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#f3f4f6')}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#e5e7eb")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "#2a2a2a")
+            }
           >
             <Flag size={16} />
             <span>Report</span>
@@ -199,47 +250,57 @@ export default function VideoInfo({ video }: VideoInfoProps) {
       </div>
 
       {/* Channel Info */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        padding: '16px 0',
-        borderTop: '1px solid #e5e7eb',
-        borderBottom: '1px solid #e5e7eb'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          padding: "16px 0",
+          borderTop: "1px solid #e5e7eb",
+          borderBottom: "1px solid #e5e7eb",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
           {video.user.avatar ? (
             <img
               src={video.user.avatar}
               alt={video.user.username}
               style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                objectFit: 'cover'
+                width: "40px",
+                height: "40px",
+                borderRadius: "50%",
+                objectFit: "cover",
               }}
             />
           ) : (
-            <div style={{
-              width: '40px',
-              height: '40px',
-              background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontWeight: '600',
-              fontSize: '16px'
-            }}>
+            <div
+              style={{
+                width: "40px",
+                height: "40px",
+                background: "linear-gradient(135deg, #3b82f6, #8b5cf6)",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "white",
+                fontWeight: "600",
+                fontSize: "16px",
+              }}
+            >
               {video.user.username.charAt(0).toUpperCase()}
             </div>
           )}
           <div>
-            <h3 style={{ fontWeight: '500', color: '#111827', marginBottom: '2px' }}>
+            <h3
+              style={{
+                fontWeight: "500",
+                color: "#111827",
+                marginBottom: "2px",
+              }}
+            >
               {video.user.username}
             </h3>
-            <p style={{ fontSize: '12px', color: '#6b7280' }}>
+            <p style={{ fontSize: "12px", color: "#6b7280" }}>
               {formatViewCount(video.user.subscriberCount)} subscribers
             </p>
           </div>
@@ -248,28 +309,28 @@ export default function VideoInfo({ video }: VideoInfoProps) {
         <button
           onClick={handleSubscribe}
           style={{
-            padding: '10px 16px',
-            borderRadius: '20px',
-            fontSize: '14px',
-            fontWeight: '500',
-            border: 'none',
-            cursor: 'pointer',
-            transition: 'background-color 0.2s',
-            backgroundColor: isSubscribed ? '#f3f4f6' : '#111827',
-            color: isSubscribed ? '#374151' : 'white'
+            padding: "10px 16px",
+            borderRadius: "20px",
+            fontSize: "14px",
+            fontWeight: "500",
+            border: "none",
+            cursor: "pointer",
+            transition: "background-color 0.2s",
+            backgroundColor: isSubscribed ? "#f3f4f6" : "#111827",
+            color: isSubscribed ? "#374151" : "white",
           }}
           onMouseEnter={(e) => {
             if (isSubscribed) {
-              e.currentTarget.style.backgroundColor = '#e5e7eb';
+              e.currentTarget.style.backgroundColor = "#e5e7eb";
             } else {
-              e.currentTarget.style.backgroundColor = '#374151';
+              e.currentTarget.style.backgroundColor = "#374151";
             }
           }}
           onMouseLeave={(e) => {
             if (isSubscribed) {
-              e.currentTarget.style.backgroundColor = '#f3f4f6';
+              e.currentTarget.style.backgroundColor = "#f3f4f6";
             } else {
-              e.currentTarget.style.backgroundColor = '#111827';
+              e.currentTarget.style.backgroundColor = "#111827";
             }
           }}
         >
@@ -279,35 +340,39 @@ export default function VideoInfo({ video }: VideoInfoProps) {
 
       {/* Description */}
       {video.description && (
-        <div style={{
-          marginTop: '16px',
-          padding: '16px',
-          backgroundColor: '#f9fafb',
-          borderRadius: '12px'
-        }}>
-          <div style={{
-            fontSize: '14px',
-            color: '#111827',
-            whiteSpace: 'pre-wrap',
-            lineHeight: '1.5'
-          }}>
+        <div
+          style={{
+            marginTop: "16px",
+            padding: "16px",
+            backgroundColor: "#f9fafb",
+            borderRadius: "12px",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "14px",
+              color: "#111827",
+              whiteSpace: "pre-wrap",
+              lineHeight: "1.5",
+            }}
+          >
             {showFullDescription ? video.description : truncatedDescription}
           </div>
           {video.description.length > 200 && (
             <button
               onClick={() => setShowFullDescription(!showFullDescription)}
               style={{
-                color: '#374151',
-                fontWeight: '500',
-                marginTop: '8px',
-                fontSize: '14px',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                transition: 'color 0.2s'
+                color: "#ffffff",
+                fontWeight: "500",
+                marginTop: "8px",
+                fontSize: "14px",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                transition: "color 0.2s",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#111827')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = '#374151')}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#111827")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#374151")}
             >
               {showFullDescription ? "Show less" : "...more"}
             </button>
@@ -317,20 +382,20 @@ export default function VideoInfo({ video }: VideoInfoProps) {
 
       {/* Tags */}
       {video.tags && video.tags.length > 0 && (
-        <div style={{ marginTop: '16px' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+        <div style={{ marginTop: "16px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
             {video.tags.map((tag, index) => (
               <span
                 key={index}
                 style={{
-                  color: '#3b82f6',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  transition: 'color 0.2s'
+                  color: "#3b82f6",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  cursor: "pointer",
+                  transition: "color 0.2s",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = '#1d4ed8')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = '#3b82f6')}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#1d4ed8")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#3b82f6")}
               >
                 #{tag}
               </span>

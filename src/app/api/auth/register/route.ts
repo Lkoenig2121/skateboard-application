@@ -57,7 +57,8 @@ export async function POST(request: Request) {
     const sessionToken = `session_${newUser.id}_${Date.now()}`;
 
     // Set cookie
-    cookies().set('auth-token', sessionToken, {
+    const cookieStore = await cookies();
+    cookieStore.set('auth-token', sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

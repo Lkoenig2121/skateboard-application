@@ -23,25 +23,49 @@ export default function CategoryFilter({
 }: CategoryFilterProps) {
   return (
     <div
-      className="flex gap-3 overflow-x-auto scrollbar-hide"
       style={{
+        display: "flex",
+        gap: "12px",
+        overflowX: "auto",
+        paddingBottom: "8px",
         msOverflowStyle: "none",
         scrollbarWidth: "none",
       }}
     >
-      {categories.map((category) => (
-        <button
-          key={category.value}
-          onClick={() => onCategoryChange(category.value)}
-          className={`px-3 py-1.5 text-sm font-medium rounded-lg whitespace-nowrap transition-all duration-200 border cursor-pointer ${
-            selectedCategory === category.value
-              ? "bg-white text-gray-900 border-white"
-              : "bg-gray-800 text-gray-300 border-gray-600 hover:bg-gray-700"
-          }`}
-        >
-          {category.label}
-        </button>
-      ))}
+      {categories.map((category) => {
+        const isActive = selectedCategory === category.value;
+        return (
+          <button
+            key={category.value}
+            onClick={() => onCategoryChange(category.value)}
+            style={{
+              padding: "8px 12px",
+              fontSize: "14px",
+              fontWeight: "500",
+              borderRadius: "8px",
+              whiteSpace: "nowrap",
+              transition: "all 0.2s ease",
+              border: "1px solid transparent",
+              cursor: "pointer",
+              backgroundColor: isActive ? "#f1f1f1" : "#272727",
+              color: isActive ? "#0f0f0f" : "#f1f1f1",
+              fontFamily: "inherit",
+            }}
+            onMouseEnter={(e) => {
+              if (!isActive) {
+                e.currentTarget.style.backgroundColor = "#3f3f3f";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isActive) {
+                e.currentTarget.style.backgroundColor = "#272727";
+              }
+            }}
+          >
+            {category.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

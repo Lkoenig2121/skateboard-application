@@ -46,7 +46,7 @@ export default function LoginPage() {
     <div
       style={{
         minHeight: "100vh",
-        backgroundColor: "#f9fafb",
+        backgroundColor: "#0f0f0f",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -57,10 +57,11 @@ export default function LoginPage() {
         style={{
           maxWidth: "400px",
           width: "100%",
-          backgroundColor: "white",
+          backgroundColor: "#1a1a1a",
           borderRadius: "12px",
           padding: "32px",
-          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)",
+          border: "1px solid #333333",
         }}
       >
         {/* Logo */}
@@ -90,7 +91,7 @@ export default function LoginPage() {
               style={{
                 fontSize: "24px",
                 fontWeight: "bold",
-                color: "#111827",
+                color: "#ffffff",
               }}
             >
               SkateTube
@@ -104,13 +105,13 @@ export default function LoginPage() {
             style={{
               fontSize: "24px",
               fontWeight: "bold",
-              color: "#111827",
+              color: "#ffffff",
               marginBottom: "8px",
             }}
           >
             Welcome back
           </h1>
-          <p style={{ fontSize: "14px", color: "#6b7280" }}>
+          <p style={{ fontSize: "14px", color: "#cccccc" }}>
             Sign in to your SkateTube account
           </p>
         </div>
@@ -167,7 +168,7 @@ export default function LoginPage() {
                 display: "block",
                 fontSize: "14px",
                 fontWeight: "500",
-                color: "#374151",
+                color: "#ffffff",
                 marginBottom: "8px",
               }}
             >
@@ -180,15 +181,19 @@ export default function LoginPage() {
               required
               style={{
                 width: "100%",
+                maxWidth: "100%",
+                boxSizing: "border-box",
                 padding: "12px",
-                border: "1px solid #d1d5db",
+                border: "1px solid #444444",
                 borderRadius: "8px",
                 fontSize: "14px",
                 outline: "none",
                 transition: "border-color 0.2s",
+                backgroundColor: "#2a2a2a",
+                color: "#ffffff",
               }}
               onFocus={(e) => (e.target.style.borderColor = "#3b82f6")}
-              onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
+              onBlur={(e) => (e.target.style.borderColor = "#444444")}
               placeholder="Enter your email"
             />
           </div>
@@ -199,7 +204,7 @@ export default function LoginPage() {
                 display: "block",
                 fontSize: "14px",
                 fontWeight: "500",
-                color: "#374151",
+                color: "#ffffff",
                 marginBottom: "8px",
               }}
             >
@@ -213,16 +218,20 @@ export default function LoginPage() {
                 required
                 style={{
                   width: "100%",
+                  maxWidth: "100%",
+                  boxSizing: "border-box",
                   padding: "12px",
                   paddingRight: "44px",
-                  border: "1px solid #d1d5db",
+                  border: "1px solid #444444",
                   borderRadius: "8px",
                   fontSize: "14px",
                   outline: "none",
                   transition: "border-color 0.2s",
+                  backgroundColor: "#2a2a2a",
+                  color: "#ffffff",
                 }}
                 onFocus={(e) => (e.target.style.borderColor = "#3b82f6")}
-                onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
+                onBlur={(e) => (e.target.style.borderColor = "#444444")}
                 placeholder="Enter your password"
               />
               <button
@@ -236,7 +245,7 @@ export default function LoginPage() {
                   border: "none",
                   backgroundColor: "transparent",
                   cursor: "pointer",
-                  color: "#6b7280",
+                  color: "#cccccc",
                 }}
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -283,7 +292,7 @@ export default function LoginPage() {
             borderTop: "1px solid #e5e7eb",
           }}
         >
-          <p style={{ fontSize: "14px", color: "#6b7280" }}>
+          <p style={{ fontSize: "14px", color: "#cccccc" }}>
             Don't have an account?{" "}
             <Link
               href="/signup"
@@ -296,11 +305,11 @@ export default function LoginPage() {
               Sign up
             </Link>
           </p>
-          <p style={{ fontSize: "14px", color: "#6b7280", marginTop: "8px" }}>
+          <p style={{ fontSize: "14px", color: "#cccccc", marginTop: "8px" }}>
             <Link
               href="/"
               style={{
-                color: "#6b7280",
+                color: "#cccccc",
                 textDecoration: "none",
               }}
             >

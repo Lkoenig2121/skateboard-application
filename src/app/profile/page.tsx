@@ -36,15 +36,13 @@ export default function ProfilePage() {
 
       // Fetch current user
       const userResponse = await fetch("/api/auth/me");
-      if (!userResponse.ok) {
-        if (userResponse.status === 401) {
-          router.push("/login");
-          return;
-        }
-        throw new Error("Failed to fetch user profile");
+      const userData = await userResponse.json();
+      
+      if (!userData.authenticated || !userData.user) {
+        router.push("/login");
+        return;
       }
 
-      const userData = await userResponse.json();
       setUser(userData.user);
 
       // Fetch user's videos (for demo, we'll get skateboarding videos)

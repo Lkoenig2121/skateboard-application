@@ -48,7 +48,7 @@ export default function SignUpPage() {
     <div
       style={{
         minHeight: "100vh",
-        backgroundColor: "#f9fafb",
+        backgroundColor: "#0f0f0f",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -59,10 +59,11 @@ export default function SignUpPage() {
         style={{
           maxWidth: "400px",
           width: "100%",
-          backgroundColor: "white",
+          backgroundColor: "#1a1a1a",
           borderRadius: "12px",
           padding: "32px",
-          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)",
+          border: "1px solid #333333",
         }}
       >
         {/* Logo */}
@@ -92,7 +93,7 @@ export default function SignUpPage() {
               style={{
                 fontSize: "24px",
                 fontWeight: "bold",
-                color: "#111827",
+                color: "#ffffff",
               }}
             >
               SkateTube
@@ -106,13 +107,13 @@ export default function SignUpPage() {
             style={{
               fontSize: "24px",
               fontWeight: "bold",
-              color: "#111827",
+              color: "#ffffff",
               marginBottom: "8px",
             }}
           >
             Join SkateTube
           </h1>
-          <p style={{ fontSize: "14px", color: "#6b7280" }}>
+          <p style={{ fontSize: "14px", color: "#cccccc" }}>
             Create your account to start sharing skateboarding videos
           </p>
         </div>
@@ -142,7 +143,7 @@ export default function SignUpPage() {
                 display: "block",
                 fontSize: "14px",
                 fontWeight: "500",
-                color: "#374151",
+                color: "#ffffff",
                 marginBottom: "8px",
               }}
             >
@@ -155,15 +156,19 @@ export default function SignUpPage() {
               required
               style={{
                 width: "100%",
+                maxWidth: "100%",
+                boxSizing: "border-box",
                 padding: "12px",
-                border: "1px solid #d1d5db",
+                border: "1px solid #444444",
                 borderRadius: "8px",
                 fontSize: "14px",
                 outline: "none",
                 transition: "border-color 0.2s",
+                backgroundColor: "#2a2a2a",
+                color: "#ffffff",
               }}
               onFocus={(e) => (e.target.style.borderColor = "#3b82f6")}
-              onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
+              onBlur={(e) => (e.target.style.borderColor = "#444444")}
               placeholder="Choose a unique username"
             />
           </div>
@@ -174,7 +179,7 @@ export default function SignUpPage() {
                 display: "block",
                 fontSize: "14px",
                 fontWeight: "500",
-                color: "#374151",
+                color: "#ffffff",
                 marginBottom: "8px",
               }}
             >
@@ -187,15 +192,19 @@ export default function SignUpPage() {
               required
               style={{
                 width: "100%",
+                maxWidth: "100%",
+                boxSizing: "border-box",
                 padding: "12px",
-                border: "1px solid #d1d5db",
+                border: "1px solid #444444",
                 borderRadius: "8px",
                 fontSize: "14px",
                 outline: "none",
                 transition: "border-color 0.2s",
+                backgroundColor: "#2a2a2a",
+                color: "#ffffff",
               }}
               onFocus={(e) => (e.target.style.borderColor = "#3b82f6")}
-              onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
+              onBlur={(e) => (e.target.style.borderColor = "#444444")}
               placeholder="Enter your email"
             />
           </div>
@@ -206,7 +215,7 @@ export default function SignUpPage() {
                 display: "block",
                 fontSize: "14px",
                 fontWeight: "500",
-                color: "#374151",
+                color: "#ffffff",
                 marginBottom: "8px",
               }}
             >
@@ -221,16 +230,20 @@ export default function SignUpPage() {
                 minLength={6}
                 style={{
                   width: "100%",
+                  maxWidth: "100%",
+                  boxSizing: "border-box",
                   padding: "12px",
                   paddingRight: "44px",
-                  border: "1px solid #d1d5db",
+                  border: "1px solid #444444",
                   borderRadius: "8px",
                   fontSize: "14px",
                   outline: "none",
                   transition: "border-color 0.2s",
+                  backgroundColor: "#2a2a2a",
+                  color: "#ffffff",
                 }}
                 onFocus={(e) => (e.target.style.borderColor = "#3b82f6")}
-                onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
+                onBlur={(e) => (e.target.style.borderColor = "#444444")}
                 placeholder="Create a strong password (min 6 characters)"
               />
               <button
@@ -244,7 +257,7 @@ export default function SignUpPage() {
                   border: "none",
                   backgroundColor: "transparent",
                   cursor: "pointer",
-                  color: "#6b7280",
+                  color: "#cccccc",
                 }}
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -258,7 +271,7 @@ export default function SignUpPage() {
                 display: "block",
                 fontSize: "14px",
                 fontWeight: "500",
-                color: "#374151",
+                color: "#ffffff",
                 marginBottom: "8px",
               }}
             >
@@ -270,16 +283,20 @@ export default function SignUpPage() {
               rows={3}
               style={{
                 width: "100%",
+                maxWidth: "100%",
+                boxSizing: "border-box",
                 padding: "12px",
-                border: "1px solid #d1d5db",
+                border: "1px solid #444444",
                 borderRadius: "8px",
                 fontSize: "14px",
                 outline: "none",
                 resize: "vertical",
                 transition: "border-color 0.2s",
+                backgroundColor: "#2a2a2a",
+                color: "#ffffff",
               }}
               onFocus={(e) => (e.target.style.borderColor = "#3b82f6")}
-              onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
+              onBlur={(e) => (e.target.style.borderColor = "#444444")}
               placeholder="Tell us about yourself and your skateboarding journey..."
             />
           </div>
@@ -323,7 +340,7 @@ export default function SignUpPage() {
             borderTop: "1px solid #e5e7eb",
           }}
         >
-          <p style={{ fontSize: "14px", color: "#6b7280" }}>
+          <p style={{ fontSize: "14px", color: "#cccccc" }}>
             Already have an account?{" "}
             <Link
               href="/login"
@@ -336,11 +353,11 @@ export default function SignUpPage() {
               Sign in
             </Link>
           </p>
-          <p style={{ fontSize: "14px", color: "#6b7280", marginTop: "8px" }}>
+          <p style={{ fontSize: "14px", color: "#cccccc", marginTop: "8px" }}>
             <Link
               href="/"
               style={{
-                color: "#6b7280",
+                color: "#cccccc",
                 textDecoration: "none",
               }}
             >

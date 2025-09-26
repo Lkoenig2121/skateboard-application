@@ -29,13 +29,16 @@ const mockUsers = [
 
 export async function GET() {
   try {
-    const authToken = cookies().get('auth-token');
+    const cookieStore = await cookies();
+    const authToken = cookieStore.get('auth-token');
     
     if (!authToken) {
-      return NextResponse.json(
-        { error: 'Not authenticated' },
-        { status: 401 }
-      );
+      // Return 200 with null user for unauthenticated requests
+      // This prevents 401 errors in the browser console
+      return NextResponse.json({
+        user: null,
+        authenticated: false
+      });
     }
 
     // In production, decode JWT token and fetch user from database
@@ -53,7 +56,8 @@ export async function GET() {
     const { ...userWithoutPassword } = user;
     
     return NextResponse.json({
-      user: userWithoutPassword
+      user: userWithoutPassword,
+      authenticated: true
     });
 
   } catch (error) {

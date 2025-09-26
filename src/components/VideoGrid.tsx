@@ -10,11 +10,11 @@ interface VideoGridProps {
 export default function VideoGrid({ videos }: VideoGridProps) {
   if (videos.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-600 text-lg mb-4">
+      <div style={{ textAlign: "center", padding: "48px 0" }}>
+        <p style={{ color: "#cccccc", fontSize: "18px", marginBottom: "16px" }}>
           No videos found
         </p>
-        <p className="text-gray-400">
+        <p style={{ color: "#999999" }}>
           Try adjusting your search or category filter
         </p>
       </div>
@@ -22,7 +22,14 @@ export default function VideoGrid({ videos }: VideoGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 lg:gap-6">
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+        gap: "24px",
+        padding: "0 8px",
+      }}
+    >
       {videos.map((video) => (
         <VideoCard key={video.id} video={video} />
       ))}

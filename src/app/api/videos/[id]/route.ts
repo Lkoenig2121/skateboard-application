@@ -24,9 +24,9 @@ function convertISO8601ToSeconds(iso8601Duration: string): number {
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const videoId = params.id;
+  const { id: videoId } = await params;
 
   if (!YOUTUBE_API_KEY) {
     return NextResponse.json({ error: 'YouTube API key not configured' }, { status: 500 });

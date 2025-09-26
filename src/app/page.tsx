@@ -67,16 +67,31 @@ export default function Home() {
   }, [videos, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#0f0f0f",
+        margin: 0,
+        padding: 0,
+        width: "100%",
+        position: "relative",
+      }}
+    >
       <Header onSearch={setSearchQuery} onSidebarToggle={setIsSidebarOpen} />
 
       {/* Category Filter - positioned like YouTube */}
       <div
-        className={`sticky top-14 z-30 bg-gray-900 border-b border-gray-700 transition-all duration-300 ${
-          isSidebarOpen ? "ml-60" : ""
-        }`}
+        style={{
+          position: "sticky",
+          top: "56px",
+          zIndex: 30,
+          backgroundColor: "#0f0f0f",
+          borderBottom: "1px solid #303030",
+          transition: "margin-left 0.3s ease",
+          marginLeft: isSidebarOpen ? "240px" : "0",
+        }}
       >
-        <div className="px-4 lg:px-6 py-3">
+        <div style={{ padding: "12px 16px" }}>
           <CategoryFilter
             selectedCategory={selectedCategory}
             onCategoryChange={setSelectedCategory}
@@ -85,9 +100,11 @@ export default function Home() {
       </div>
 
       <main
-        className={`transition-all duration-300 px-4 lg:px-6 py-6 ${
-          isSidebarOpen ? "ml-60" : ""
-        }`}
+        style={{
+          transition: "margin-left 0.3s ease",
+          padding: "24px 16px",
+          marginLeft: isSidebarOpen ? "240px" : "0",
+        }}
       >
         {/* Loading State */}
         {loading && (

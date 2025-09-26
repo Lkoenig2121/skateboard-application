@@ -9,7 +9,6 @@ import {
   Menu,
   Mic,
   Bell,
-  Video,
   User,
   LogOut,
   Settings,
@@ -46,23 +45,25 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
     const checkAuthStatus = async () => {
       try {
         const response = await fetch("/api/auth/me");
-        setIsLoggedIn(response.ok);
-      } catch {
+        const data = await response.json();
+        setIsLoggedIn(data.authenticated === true);
+      } catch (error) {
+        // Silently handle auth errors - user is just not logged in
         setIsLoggedIn(false);
       }
     };
+
+    // Only check auth status once on mount, not on every render
     checkAuthStatus();
 
     // Check screen size and auto-open sidebar on large screens
     const handleResize = () => {
       const isLarge = window.innerWidth >= 768;
       setIsLargeScreen(isLarge);
-      // Only auto-open on very large screens
       if (window.innerWidth >= 1200) {
         setIsSidebarOpen(true);
         onSidebarToggle?.(true);
       } else if (!isLarge && isSidebarOpen) {
-        // Close sidebar on mobile if it was open
         setIsSidebarOpen(false);
         onSidebarToggle?.(false);
       }
@@ -76,11 +77,9 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // If onSearch prop is provided, use it (for search page)
       if (onSearch) {
         onSearch(searchQuery);
       } else {
-        // Otherwise, navigate to search page
         router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       }
     }
@@ -99,108 +98,344 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
 
   return (
     <>
-      {/* Header - Dark YouTube Theme */}
-      <header className="bg-gray-900 sticky top-0 z-50 h-14 px-4 flex items-center">
-        {/* Left Section - Menu & Logo (Fixed Width) */}
-        <div className="flex items-center w-52 min-w-0">
+      {/* Simple YouTube Header */}
+      <header
+        style={{
+          backgroundColor: "#0f0f0f",
+          height: "56px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "0 16px",
+          position: "sticky",
+          top: 0,
+          zIndex: 50,
+        }}
+      >
+        {/* Left: Menu + Logo */}
+        <div
+          style={{ display: "flex", alignItems: "center", minWidth: "170px" }}
+        >
           <button
             onClick={() => {
               const newState = !isSidebarOpen;
               setIsSidebarOpen(newState);
               onSidebarToggle?.(newState);
             }}
-            className="p-2 hover:bg-gray-800 rounded-full mr-4 flex-shrink-0 text-white"
+            style={{
+              background: "none",
+              border: "none",
+              color: "white",
+              padding: "8px",
+              borderRadius: "50%",
+              cursor: "pointer",
+              marginRight: "16px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "transparent")
+            }
           >
             <Menu size={20} />
           </button>
 
           <Link
             href="/"
-            className="flex items-center gap-1 no-underline min-w-0"
+            style={{
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+            }}
           >
-            <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center flex-shrink-0">
-              <Video size={20} className="text-white" />
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <div
+                style={{
+                  width: "32px",
+                  height: "24px",
+                  backgroundColor: "#ff0000",
+                  borderRadius: "4px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginRight: "4px",
+                }}
+              >
+                <div
+                  style={{
+                    width: 0,
+                    height: 0,
+                    borderLeft: "8px solid white",
+                    borderTop: "5px solid transparent",
+                    borderBottom: "5px solid transparent",
+                    marginLeft: "2px",
+                  }}
+                />
+              </div>
+              <span
+                style={{
+                  color: "white",
+                  fontSize: "20px",
+                  fontWeight: "400",
+                  letterSpacing: "-0.5px",
+                }}
+              >
+                SkateTube
+              </span>
             </div>
-            <span className="text-xl font-bold text-white ml-1 hidden sm:block truncate">
-              SkateTube
-            </span>
           </Link>
         </div>
 
-        {/* Center Section - Search (Flexible) */}
-        <div className="flex-1 flex justify-center px-8 hidden md:flex">
-          <div className="flex max-w-2xl w-full">
-            <form onSubmit={handleSearch} className="flex flex-1 max-w-xl">
+        {/* Center: Search */}
+        <div
+          style={{
+            flex: 1,
+            maxWidth: "728px",
+            display: "flex",
+            justifyContent: "center",
+            padding: "0 40px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              width: "100%",
+              maxWidth: "640px",
+            }}
+          >
+            <form onSubmit={handleSearch} style={{ display: "flex", flex: 1 }}>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search"
-                className="flex-1 h-10 px-4 text-base border border-gray-600 rounded-l-full bg-gray-800 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none"
+                style={{
+                  flex: 1,
+                  height: "40px",
+                  padding: "0 16px",
+                  backgroundColor: "#121212",
+                  border: "1px solid #303030",
+                  borderRadius: "20px 0 0 20px",
+                  color: "white",
+                  fontSize: "16px",
+                  outline: "none",
+                }}
+                onFocus={(e) => (e.target.style.borderColor = "#1c62b9")}
+                onBlur={(e) => (e.target.style.borderColor = "#303030")}
               />
               <button
                 type="submit"
-                className="w-16 h-10 border border-gray-600 border-l-0 rounded-r-full bg-gray-700 hover:bg-gray-600 flex items-center justify-center flex-shrink-0"
+                style={{
+                  width: "64px",
+                  height: "40px",
+                  backgroundColor: "#222222",
+                  border: "1px solid #303030",
+                  borderLeft: "none",
+                  borderRadius: "0 20px 20px 0",
+                  color: "white",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#3f3f3f")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#222222")
+                }
               >
-                <Search size={20} className="text-gray-300" />
+                <Search size={20} />
               </button>
             </form>
-            <button className="ml-2 p-2 hover:bg-gray-800 rounded-full flex-shrink-0">
-              <Mic size={20} className="text-gray-300" />
+            <button
+              style={{
+                width: "40px",
+                height: "40px",
+                backgroundColor: "#222222",
+                border: "none",
+                borderRadius: "50%",
+                color: "white",
+                cursor: "pointer",
+                marginLeft: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  "rgba(255,255,255,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "#222222")
+              }
+            >
+              <Mic size={20} />
             </button>
           </div>
         </div>
 
-        {/* Right Section - Actions & Profile (Fixed Width) */}
-        <div className="flex items-center gap-1 w-52 justify-end">
-          <button className="md:hidden p-2 hover:bg-gray-800 rounded-full text-white">
-            <Search size={20} />
-          </button>
-
-          <Link
-            href="/upload"
-            className="p-2 hover:bg-gray-800 rounded-full text-white"
-            title="Create"
+        {/* Right: Actions */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            minWidth: "170px",
+            justifyContent: "flex-end",
+          }}
+        >
+          <button
+            style={{
+              background: "none",
+              border: "none",
+              color: "white",
+              padding: "8px",
+              borderRadius: "50%",
+              cursor: "pointer",
+              marginRight: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "transparent")
+            }
           >
             <Upload size={20} />
-          </Link>
-
-          <button
-            className="p-2 hover:bg-gray-800 rounded-full text-white"
-            title="Notifications"
-          >
-            <Bell size={20} />
           </button>
 
-          <div className="relative ml-2">
+          <button
+            style={{
+              background: "none",
+              border: "none",
+              color: "white",
+              padding: "8px",
+              borderRadius: "50%",
+              cursor: "pointer",
+              marginRight: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "relative",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "transparent")
+            }
+          >
+            <Bell size={20} />
+            <div
+              style={{
+                position: "absolute",
+                top: "6px",
+                right: "6px",
+                width: "6px",
+                height: "6px",
+                backgroundColor: "#ff0000",
+                borderRadius: "50%",
+              }}
+            />
+          </button>
+
+          <div style={{ position: "relative" }}>
             <button
               onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-              className="w-8 h-8 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center"
+              style={{
+                width: "32px",
+                height: "32px",
+                backgroundColor: "#3ea6ff",
+                border: "none",
+                borderRadius: "50%",
+                color: "white",
+                cursor: "pointer",
+                fontSize: "14px",
+                fontWeight: "500",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              <User size={18} className="text-white" />
+              U
             </button>
 
-            {/* Profile Dropdown */}
             {showProfileDropdown && (
-              <div className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-lg shadow-lg border border-gray-700 py-2 z-50">
+              <div
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: "100%",
+                  marginTop: "8px",
+                  width: "250px",
+                  backgroundColor: "#282828",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 32px rgba(0,0,0,0.2)",
+                  padding: "8px 0",
+                  zIndex: 1000,
+                }}
+              >
                 {isLoggedIn ? (
                   <>
                     <Link
                       href="/profile"
-                      className="flex items-center gap-3 px-4 py-2 hover:bg-gray-700 text-white no-underline"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                        padding: "8px 16px",
+                        color: "white",
+                        textDecoration: "none",
+                        backgroundColor: "transparent",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.backgroundColor =
+                          "rgba(255,255,255,0.1)")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.backgroundColor = "transparent")
+                      }
                       onClick={() => setShowProfileDropdown(false)}
                     >
                       <User size={18} />
                       <span>Your profile</span>
                     </Link>
-                    <button className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-700 text-white">
-                      <Settings size={18} />
-                      <span>Settings</span>
-                    </button>
-                    <hr className="my-2 border-gray-700" />
+                    <div
+                      style={{
+                        height: "1px",
+                        backgroundColor: "rgba(255,255,255,0.1)",
+                        margin: "8px 0",
+                      }}
+                    />
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-700 text-white"
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                        padding: "8px 16px",
+                        color: "white",
+                        backgroundColor: "transparent",
+                        border: "none",
+                        cursor: "pointer",
+                        textAlign: "left",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.backgroundColor =
+                          "rgba(255,255,255,0.1)")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.backgroundColor = "transparent")
+                      }
                     >
                       <LogOut size={18} />
                       <span>Sign out</span>
@@ -210,7 +445,22 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                   <>
                     <Link
                       href="/login"
-                      className="flex items-center gap-3 px-4 py-2 hover:bg-gray-700 text-white no-underline"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                        padding: "8px 16px",
+                        color: "white",
+                        textDecoration: "none",
+                        backgroundColor: "transparent",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.backgroundColor =
+                          "rgba(255,255,255,0.1)")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.backgroundColor = "transparent")
+                      }
                       onClick={() => setShowProfileDropdown(false)}
                     >
                       <User size={18} />
@@ -218,7 +468,22 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                     </Link>
                     <Link
                       href="/signup"
-                      className="flex items-center gap-3 px-4 py-2 hover:bg-gray-700 text-white no-underline"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                        padding: "8px 16px",
+                        color: "white",
+                        textDecoration: "none",
+                        backgroundColor: "transparent",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.backgroundColor =
+                          "rgba(255,255,255,0.1)")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.backgroundColor = "transparent")
+                      }
                       onClick={() => setShowProfileDropdown(false)}
                     >
                       <Settings size={18} />
@@ -232,131 +497,293 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
         </div>
       </header>
 
-      {/* YouTube-style Dark Sidebar */}
+      {/* Sidebar */}
       <div
-        className={`fixed top-14 left-0 h-[calc(100vh-3.5rem)] bg-gray-900 border-r border-gray-700 transition-all duration-300 z-40 ${
-          isSidebarOpen ? "w-60" : "w-0"
-        } overflow-hidden overflow-y-auto`}
+        style={{
+          position: "fixed",
+          top: "56px",
+          left: 0,
+          height: "calc(100vh - 56px)",
+          width: isSidebarOpen ? "240px" : "0",
+          backgroundColor: "#0f0f0f",
+          borderRight: "1px solid #303030",
+          transition: "width 0.3s ease",
+          zIndex: 40,
+          overflow: "hidden",
+        }}
       >
-        <div className="py-2 w-60">
+        <div
+          style={{
+            width: "240px",
+            padding: "12px 0",
+            overflowY: "auto",
+            height: "100%",
+          }}
+        >
           {/* Main Navigation */}
-          <div className="px-3">
+          <div
+            style={{
+              paddingBottom: "12px",
+              borderBottom: "1px solid #303030",
+              marginBottom: "12px",
+            }}
+          >
             <Link
               href="/"
-              className="flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white no-underline"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "24px",
+                padding: "8px 24px",
+                color: "white",
+                textDecoration: "none",
+                backgroundColor: "transparent",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  "rgba(255,255,255,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
             >
               <Home size={20} />
-              <span className="text-sm font-medium">Home</span>
+              <span style={{ fontSize: "14px" }}>Home</span>
             </Link>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "24px",
+                padding: "8px 24px",
+                color: "white",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  "rgba(255,255,255,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
+            >
               <Play size={20} />
-              <span className="text-sm font-medium">Shorts</span>
-            </button>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
+              <span style={{ fontSize: "14px" }}>Shorts</span>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "24px",
+                padding: "8px 24px",
+                color: "white",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  "rgba(255,255,255,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
+            >
               <PlaySquare size={20} />
-              <span className="text-sm font-medium">Subscriptions</span>
-            </button>
+              <span style={{ fontSize: "14px" }}>Subscriptions</span>
+            </div>
           </div>
-
-          <hr className="border-gray-700 my-3" />
 
           {/* You section */}
-          <div className="px-3">
-            <div className="px-3 py-2">
-              <span className="text-sm font-medium text-white">You</span>
+          <div
+            style={{
+              paddingBottom: "12px",
+              borderBottom: "1px solid #303030",
+              marginBottom: "12px",
+            }}
+          >
+            <div
+              style={{
+                padding: "8px 24px",
+                color: "white",
+                fontSize: "16px",
+                fontWeight: "500",
+              }}
+            >
+              You
             </div>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "24px",
+                padding: "8px 24px",
+                color: "white",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  "rgba(255,255,255,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
+            >
               <User size={20} />
-              <span className="text-sm">Your channel</span>
-            </button>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
+              <span style={{ fontSize: "14px" }}>Your channel</span>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "24px",
+                padding: "8px 24px",
+                color: "white",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  "rgba(255,255,255,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
+            >
               <History size={20} />
-              <span className="text-sm">History</span>
-            </button>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
-              <PlaySquare size={20} />
-              <span className="text-sm">Your videos</span>
-            </button>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
+              <span style={{ fontSize: "14px" }}>History</span>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "24px",
+                padding: "8px 24px",
+                color: "white",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  "rgba(255,255,255,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
+            >
               <Clock size={20} />
-              <span className="text-sm">Watch later</span>
-            </button>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
+              <span style={{ fontSize: "14px" }}>Watch later</span>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "24px",
+                padding: "8px 24px",
+                color: "white",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  "rgba(255,255,255,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
+            >
               <ThumbsUp size={20} />
-              <span className="text-sm">Liked videos</span>
-            </button>
+              <span style={{ fontSize: "14px" }}>Liked videos</span>
+            </div>
           </div>
-
-          <hr className="border-gray-700 my-3" />
 
           {/* Explore section */}
-          <div className="px-3">
-            <div className="px-3 py-2">
-              <span className="text-sm font-medium text-white">Explore</span>
+          <div>
+            <div
+              style={{
+                padding: "8px 24px",
+                color: "white",
+                fontSize: "16px",
+                fontWeight: "500",
+              }}
+            >
+              Explore
             </div>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "24px",
+                padding: "8px 24px",
+                color: "white",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  "rgba(255,255,255,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
+            >
               <Flame size={20} />
-              <span className="text-sm">Trending</span>
-            </button>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
-              <Music size={20} />
-              <span className="text-sm">Music</span>
-            </button>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
-              <Film size={20} />
-              <span className="text-sm">Movies</span>
-            </button>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
-              <Radio size={20} />
-              <span className="text-sm">Live</span>
-            </button>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
-              <Gamepad2 size={20} />
-              <span className="text-sm">Gaming</span>
-            </button>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
-              <Trophy size={20} />
-              <span className="text-sm">Sports</span>
-            </button>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
-              <Lightbulb size={20} />
-              <span className="text-sm">Learning</span>
-            </button>
-          </div>
-
-          <hr className="border-gray-700 my-3" />
-
-          {/* Subscriptions section */}
-          <div className="px-3">
-            <div className="px-3 py-2">
-              <span className="text-sm font-medium text-white">
-                Subscriptions
-              </span>
+              <span style={{ fontSize: "14px" }}>Trending</span>
             </div>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
-              <div className="w-6 h-6 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-xs font-bold">T</span>
-              </div>
-              <span className="text-sm">The Matt Kohr...</span>
-            </button>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
-              <div className="w-6 h-6 bg-gradient-to-br from-red-400 to-pink-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-xs font-bold">S</span>
-              </div>
-              <span className="text-sm">Scump</span>
-            </button>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
-              <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-xs font-bold">D</span>
-              </div>
-              <span className="text-sm">Dashy</span>
-            </button>
-            <button className="w-full flex items-center gap-6 px-3 py-2.5 hover:bg-gray-800 rounded-lg text-white">
-              <div className="w-6 h-6 bg-gradient-to-br from-purple-400 to-indigo-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-xs font-bold">O</span>
-              </div>
-              <span className="text-sm">OpTic Gaming</span>
-            </button>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "24px",
+                padding: "8px 24px",
+                color: "white",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  "rgba(255,255,255,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
+            >
+              <Music size={20} />
+              <span style={{ fontSize: "14px" }}>Music</span>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "24px",
+                padding: "8px 24px",
+                color: "white",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  "rgba(255,255,255,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
+            >
+              <Gamepad2 size={20} />
+              <span style={{ fontSize: "14px" }}>Gaming</span>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "24px",
+                padding: "8px 24px",
+                color: "white",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  "rgba(255,255,255,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
+            >
+              <Trophy size={20} />
+              <span style={{ fontSize: "14px" }}>Sports</span>
+            </div>
           </div>
         </div>
       </div>
@@ -364,7 +791,15 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
       {/* Overlay for mobile */}
       {isSidebarOpen && !isLargeScreen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            zIndex: 30,
+          }}
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
