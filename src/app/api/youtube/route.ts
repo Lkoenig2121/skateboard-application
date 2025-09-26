@@ -56,6 +56,10 @@ function convertDuration(duration: string): number {
 }
 
 export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const category = searchParams.get('category') || 'skateboarding';
+  const maxResults = searchParams.get('maxResults') || '12';
+
   try {
     if (!YOUTUBE_API_KEY) {
       return NextResponse.json(
@@ -63,10 +67,6 @@ export async function GET(request: NextRequest) {
         { status: 500 }
       );
     }
-
-    const { searchParams } = new URL(request.url);
-    const category = searchParams.get('category') || 'skateboarding';
-    const maxResults = searchParams.get('maxResults') || '12';
 
     // Map our categories to YouTube search terms
     const searchTerms: { [key: string]: string } = {
