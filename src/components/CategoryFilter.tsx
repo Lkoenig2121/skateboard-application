@@ -22,45 +22,22 @@ export default function CategoryFilter({
   onCategoryChange,
 }: CategoryFilterProps) {
   return (
-    <div 
+    <div
+      className="flex gap-3 overflow-x-auto scrollbar-hide"
       style={{
-        display: 'flex',
-        gap: '12px',
-        overflowX: 'auto',
-        paddingBottom: '8px',
-        paddingTop: '4px',
-        paddingLeft: '2px',
-        paddingRight: '2px',
-        msOverflowStyle: 'none',
-        scrollbarWidth: 'none',
+        msOverflowStyle: "none",
+        scrollbarWidth: "none",
       }}
     >
       {categories.map((category) => (
         <button
           key={category.value}
           onClick={() => onCategoryChange(category.value)}
-          style={{
-            padding: '8px 16px',
-            fontSize: '14px',
-            fontWeight: '500',
-            borderRadius: '20px',
-            whiteSpace: 'nowrap',
-            transition: 'all 0.2s ease-in-out',
-            border: 'none',
-            cursor: 'pointer',
-            backgroundColor: selectedCategory === category.value ? '#111827' : '#f3f4f6',
-            color: selectedCategory === category.value ? 'white' : '#374151',
-          }}
-          onMouseEnter={(e) => {
-            if (selectedCategory !== category.value) {
-              e.currentTarget.style.backgroundColor = '#e5e7eb';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (selectedCategory !== category.value) {
-              e.currentTarget.style.backgroundColor = '#f3f4f6';
-            }
-          }}
+          className={`px-3 py-1.5 text-sm font-medium rounded-lg whitespace-nowrap transition-all duration-200 border cursor-pointer ${
+            selectedCategory === category.value
+              ? "bg-white text-gray-900 border-white"
+              : "bg-gray-800 text-gray-300 border-gray-600 hover:bg-gray-700"
+          }`}
         >
           {category.label}
         </button>

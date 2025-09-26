@@ -138,36 +138,18 @@ export default function VideoPage() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
+      <div className="min-h-screen bg-gray-100">
         <Header />
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 16px' }}>
+        <div className="md:ml-60 transition-all duration-300 max-w-6xl mx-auto px-4 py-6">
           {/* Loading skeleton */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
-            <div style={{ gridColumn: '1 / -1' }}>
-              <div style={{
-                width: '100%',
-                paddingBottom: '56.25%',
-                backgroundColor: '#e5e7eb',
-                borderRadius: '12px',
-                marginBottom: '16px',
-                position: 'relative'
-              }}>
-                <div style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: '40px',
-                  height: '40px',
-                  border: '4px solid #f3f4f6',
-                  borderTop: '4px solid #3b82f6',
-                  borderRadius: '50%',
-                  animation: 'spin 1s linear infinite'
-                }}></div>
+          <div className="grid grid-cols-1 gap-6">
+            <div>
+              <div className="w-full pb-[56.25%] bg-gray-300 rounded-xl mb-4 relative">
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-10 h-10 border-4 border-gray-100 border-t-blue-500 rounded-full animate-spin"></div>
               </div>
-              <div style={{ height: '32px', backgroundColor: '#e5e7eb', borderRadius: '8px', marginBottom: '12px' }}></div>
-              <div style={{ height: '16px', backgroundColor: '#e5e7eb', borderRadius: '4px', marginBottom: '8px' }}></div>
-              <div style={{ height: '16px', backgroundColor: '#e5e7eb', borderRadius: '4px', width: '75%' }}></div>
+              <div className="h-8 bg-gray-300 rounded-lg mb-3"></div>
+              <div className="h-4 bg-gray-300 rounded mb-2"></div>
+              <div className="h-4 bg-gray-300 rounded w-3/4"></div>
             </div>
           </div>
         </div>
@@ -177,32 +159,19 @@ export default function VideoPage() {
 
   if (error || !video) {
     return (
-      <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
+      <div className="min-h-screen bg-gray-100">
         <Header />
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 16px', textAlign: 'center' }}>
-          <div style={{
-            backgroundColor: '#fef2f2',
-            borderRadius: '12px',
-            border: '1px solid #fecaca',
-            padding: '48px 24px'
-          }}>
-            <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#dc2626', marginBottom: '16px' }}>
+        <div className="md:ml-60 transition-all duration-300 max-w-6xl mx-auto px-4 py-6 text-center">
+          <div className="bg-red-50 rounded-xl border border-red-200 p-12">
+            <h1 className="text-2xl font-bold text-red-600 mb-4">
               {error ? 'Error Loading Video' : 'Video Not Found'}
             </h1>
-            <p style={{ color: '#6b7280', fontSize: '16px', marginBottom: '24px' }}>
+            <p className="text-gray-600 text-base mb-6">
               {error || "The video you're looking for doesn't exist or may have been removed."}
             </p>
             <a 
               href="/" 
-              style={{
-                display: 'inline-block',
-                backgroundColor: '#3b82f6',
-                color: 'white',
-                padding: '12px 24px',
-                borderRadius: '8px',
-                textDecoration: 'none',
-                fontWeight: '500'
-              }}
+              className="inline-block bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg no-underline font-medium transition-colors"
             >
               Back to Home
             </a>
@@ -213,30 +182,22 @@ export default function VideoPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'white' }}>
+    <div className="min-h-screen bg-white">
       <Header />
 
-      <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '24px 16px' }}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr',
-          gap: '24px'
-        }}>
+      <main className="max-w-7xl mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 gap-6">
           {/* Main Video Content */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: isLargeScreen ? 'minmax(0, 1fr) 350px' : '1fr',
-            gap: '24px'
-          }}>
+          <div className={`grid gap-6 ${isLargeScreen ? 'grid-cols-[1fr_350px]' : 'grid-cols-1'}`}>
             {/* Video and Info Section */}
-            <div style={{ minWidth: 0 }}>
+            <div className="min-w-0">
               <YouTubePlayer videoId={video.id} />
               <VideoInfo video={video} />
               <CommentSection comments={comments} videoId={video.id} />
             </div>
 
             {/* Sidebar - Related Videos */}
-            <div style={{ minWidth: 0 }}>
+            <div className="min-w-0">
               <RelatedVideos videos={relatedVideos} />
             </div>
           </div>

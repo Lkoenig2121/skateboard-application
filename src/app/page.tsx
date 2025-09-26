@@ -15,6 +15,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Fetch videos from YouTube API
   useEffect(() => {
@@ -66,33 +67,33 @@ export default function Home() {
   }, [videos, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header onSearch={setSearchQuery} />
+    <div className="min-h-screen bg-gray-900">
+      <Header onSearch={setSearchQuery} onSidebarToggle={setIsSidebarOpen} />
 
-      <main className="max-w-screen-2xl mx-auto px-4 lg:px-6 py-8">
-        {/* Category Filter */}
-        <div className="mb-8 lg:mb-10">
+      {/* Category Filter - positioned like YouTube */}
+      <div
+        className={`sticky top-14 z-30 bg-gray-900 border-b border-gray-700 transition-all duration-300 ${
+          isSidebarOpen ? "ml-60" : ""
+        }`}
+      >
+        <div className="px-4 lg:px-6 py-3">
           <CategoryFilter
             selectedCategory={selectedCategory}
             onCategoryChange={setSelectedCategory}
           />
         </div>
+      </div>
 
+      <main
+        className={`transition-all duration-300 px-4 lg:px-6 py-6 ${
+          isSidebarOpen ? "ml-60" : ""
+        }`}
+      >
         {/* Loading State */}
         {loading && (
-          <div style={{ textAlign: "center", padding: "48px 0" }}>
-            <div
-              style={{
-                width: "40px",
-                height: "40px",
-                border: "4px solid #f3f4f6",
-                borderTop: "4px solid #3b82f6",
-                borderRadius: "50%",
-                animation: "spin 1s linear infinite",
-                margin: "0 auto 16px",
-              }}
-            ></div>
-            <p style={{ color: "#6b7280", fontSize: "16px" }}>
+          <div className="text-center py-12">
+            <div className="w-10 h-10 border-4 border-gray-700 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-300 text-base">
               Loading awesome{" "}
               {selectedCategory === "all" ? "extreme sports" : selectedCategory}{" "}
               videos...
@@ -102,26 +103,9 @@ export default function Home() {
 
         {/* Error State */}
         {error && (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "48px 0",
-              backgroundColor: "#fef2f2",
-              borderRadius: "8px",
-              border: "1px solid #fecaca",
-              margin: "16px 0",
-            }}
-          >
-            <p
-              style={{
-                color: "#dc2626",
-                fontSize: "16px",
-                marginBottom: "8px",
-              }}
-            >
-              ⚠️ {error}
-            </p>
-            <p style={{ color: "#6b7280", fontSize: "14px" }}>
+          <div className="text-center py-12 bg-red-900 rounded-lg border border-red-700 mx-4">
+            <p className="text-red-300 text-base mb-2">⚠️ {error}</p>
+            <p className="text-gray-400 text-sm">
               Please configure your YouTube API key in .env.local
             </p>
           </div>
