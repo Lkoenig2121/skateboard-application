@@ -60,23 +60,18 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
     const handleResize = () => {
       const isLarge = window.innerWidth >= 768;
       setIsLargeScreen(isLarge);
-
-      // Auto-open on very large screens (1200px+), but allow manual toggle
-      if (window.innerWidth >= 1200 && !isSidebarOpen) {
-        setIsSidebarOpen(true);
-        onSidebarToggle?.(true);
-      }
-      // On smaller screens, close sidebar if it was open
-      if (window.innerWidth < 1200 && isSidebarOpen) {
-        setIsSidebarOpen(false);
-        onSidebarToggle?.(false);
-      }
     };
+
+    // Auto-open on very large screens (1200px+) only on initial load
+    if (window.innerWidth >= 1200) {
+      setIsSidebarOpen(true);
+      onSidebarToggle?.(true);
+    }
 
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [isSidebarOpen, onSidebarToggle]);
+  }, [onSidebarToggle]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -884,7 +879,7 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                 <span style={{ fontSize: "14px" }}>Skate Park</span>
               )}
             </Link>
-          </div>
+      </div>
 
           {/* Profile Section */}
           <div
