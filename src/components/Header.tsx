@@ -60,13 +60,13 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
     const handleResize = () => {
       const isLarge = window.innerWidth >= 768;
       setIsLargeScreen(isLarge);
+      
+      // Only auto-open on very large screens (1200px+)
       if (window.innerWidth >= 1200) {
         setIsSidebarOpen(true);
         onSidebarToggle?.(true);
-      } else if (!isLarge && isSidebarOpen) {
-        setIsSidebarOpen(false);
-        onSidebarToggle?.(false);
       }
+      // Don't auto-close on smaller screens - let user control it manually
     };
 
     handleResize();
@@ -123,7 +123,7 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               onSidebarToggle?.(newState);
             }}
             style={{
-              background: "none",
+              background: isSidebarOpen ? "rgba(255,255,255,0.1)" : "none",
               border: "none",
               color: "white",
               padding: "8px",
@@ -133,12 +133,13 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              transition: "background-color 0.2s ease",
             }}
             onMouseEnter={(e) =>
               (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)")
             }
             onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor = "transparent")
+              (e.currentTarget.style.backgroundColor = isSidebarOpen ? "rgba(255,255,255,0.1)" : "transparent")
             }
           >
             <Menu size={20} />
