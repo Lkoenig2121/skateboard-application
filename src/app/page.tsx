@@ -100,9 +100,10 @@ export default function Home() {
       </div>
 
       <main
+        className="main-content-mobile"
         style={{
           transition: "margin-left 0.3s ease",
-          padding: "24px 16px",
+          padding: "16px 0",
           marginLeft: isSidebarOpen ? "240px" : "0",
         }}
       >

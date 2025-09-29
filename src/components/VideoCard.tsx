@@ -7,6 +7,7 @@ import { Video } from "@/types";
 
 interface VideoCardProps {
   video: Video;
+  isLargeScreen?: boolean;
 }
 
 function formatDuration(seconds: number): string {
@@ -54,13 +55,15 @@ function formatTimeAgo(date: Date | string): string {
   }
 }
 
-export default function VideoCard({ video }: VideoCardProps) {
+export default function VideoCard({ video, isLargeScreen = true }: VideoCardProps) {
   return (
     <div
+      className="video-card-mobile"
       style={{
         cursor: "pointer",
         width: "100%",
         transition: "transform 0.2s ease-in-out",
+        padding: "0",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-2px)";
@@ -76,11 +79,11 @@ export default function VideoCard({ video }: VideoCardProps) {
             position: "relative",
             width: "100%",
             backgroundColor: "#1a1a1a",
-            borderRadius: "12px",
+            borderRadius: isLargeScreen ? "12px" : "8px",
             overflow: "hidden",
-            marginBottom: "12px",
+            marginBottom: isLargeScreen ? "12px" : "8px",
             aspectRatio: "16/9",
-            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+            boxShadow: isLargeScreen ? "0 1px 3px rgba(0, 0, 0, 0.1)" : "0 1px 2px rgba(0, 0, 0, 0.1)",
           }}
         >
           <Image
@@ -106,14 +109,14 @@ export default function VideoCard({ video }: VideoCardProps) {
           <div
             style={{
               position: "absolute",
-              bottom: "8px",
-              right: "8px",
+              bottom: isLargeScreen ? "8px" : "4px",
+              right: isLargeScreen ? "8px" : "4px",
               backgroundColor: "rgba(0, 0, 0, 0.8)",
               color: "white",
-              fontSize: "12px",
+              fontSize: isLargeScreen ? "12px" : "10px",
               fontWeight: "600",
-              padding: "2px 6px",
-              borderRadius: "4px",
+              padding: isLargeScreen ? "2px 6px" : "1px 4px",
+              borderRadius: isLargeScreen ? "4px" : "3px",
               backdropFilter: "blur(4px)",
             }}
           >
@@ -123,13 +126,18 @@ export default function VideoCard({ video }: VideoCardProps) {
       </Link>
 
       {/* Video Info */}
-      <div style={{ display: "flex", gap: "12px", paddingLeft: "2px" }}>
+      <div style={{ 
+        display: "flex", 
+        gap: isLargeScreen ? "12px" : "10px", 
+        paddingLeft: isLargeScreen ? "2px" : "0",
+        marginTop: isLargeScreen ? "0" : "4px"
+      }}>
         {/* Channel Avatar */}
         <Link href={`/channel/${video.user.id}`}>
           <div
             style={{
-              width: "36px",
-              height: "36px",
+              width: isLargeScreen ? "36px" : "32px",
+              height: isLargeScreen ? "36px" : "32px",
               background: "linear-gradient(135deg, #3b82f6, #8b5cf6)",
               borderRadius: "50%",
               display: "flex",
@@ -137,7 +145,7 @@ export default function VideoCard({ video }: VideoCardProps) {
               justifyContent: "center",
               color: "white",
               fontWeight: "600",
-              fontSize: "14px",
+              fontSize: isLargeScreen ? "14px" : "12px",
               flexShrink: 0,
               marginTop: "4px",
               transition: "transform 0.2s ease-in-out",
@@ -159,13 +167,13 @@ export default function VideoCard({ video }: VideoCardProps) {
           <Link href={`/video/${video.id}`}>
             <h3
               style={{
-                fontSize: "14px",
+                fontSize: isLargeScreen ? "14px" : "13px",
                 fontWeight: "500",
                 color: "#ffffff",
                 lineHeight: "1.4",
-                marginBottom: "4px",
+                marginBottom: isLargeScreen ? "4px" : "2px",
                 display: "-webkit-box",
-                WebkitLineClamp: 2,
+                WebkitLineClamp: isLargeScreen ? 2 : 4,
                 WebkitBoxOrient: "vertical",
                 overflow: "hidden",
                 transition: "color 0.2s ease-in-out",
@@ -185,9 +193,9 @@ export default function VideoCard({ video }: VideoCardProps) {
           <Link href={`/channel/${video.user.id}`}>
             <p
               style={{
-                fontSize: "12px",
+                fontSize: isLargeScreen ? "12px" : "11px",
                 color: "#cccccc",
-                marginBottom: "4px",
+                marginBottom: isLargeScreen ? "4px" : "2px",
                 transition: "color 0.2s ease-in-out",
                 cursor: "pointer",
               }}
@@ -204,11 +212,11 @@ export default function VideoCard({ video }: VideoCardProps) {
 
           <div
             style={{
-              fontSize: "12px",
+              fontSize: isLargeScreen ? "12px" : "10px",
               color: "#6b7280",
               display: "flex",
               alignItems: "center",
-              gap: "4px",
+              gap: isLargeScreen ? "4px" : "3px",
             }}
           >
             <span>{formatViewCount(video.viewCount)} views</span>

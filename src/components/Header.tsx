@@ -352,20 +352,22 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
             <button
               onClick={() => setShowProfileDropdown(!showProfileDropdown)}
               style={{
-                width: "32px",
-                height: "32px",
+                width: isLargeScreen ? "32px" : "28px",
+                height: isLargeScreen ? "32px" : "28px",
                 backgroundColor: isLoggedIn ? "#3ea6ff" : "#333333",
-                border: "2px solid rgba(255,255,255,0.1)",
+                border: isLargeScreen ? "2px solid rgba(255,255,255,0.1)" : "1px solid rgba(255,255,255,0.1)",
                 borderRadius: "50%",
                 color: "white",
                 cursor: "pointer",
-                fontSize: "14px",
+                fontSize: isLargeScreen ? "14px" : "12px",
                 fontWeight: "500",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 transition: "all 0.2s ease",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                boxShadow: isLargeScreen ? "0 2px 8px rgba(0,0,0,0.3)" : "0 1px 4px rgba(0,0,0,0.2)",
+                minWidth: "28px",
+                minHeight: "28px",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor = isLoggedIn ? "#2b8ce6" : "#444444")
@@ -374,7 +376,7 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                 (e.currentTarget.style.backgroundColor = isLoggedIn ? "#3ea6ff" : "#333333")
               }
             >
-              {isLoggedIn ? "U" : <User size={16} />}
+              {isLoggedIn ? "U" : <User size={isLargeScreen ? 16 : 14} />}
             </button>
 
             {showProfileDropdown && (
@@ -384,12 +386,13 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                   right: 0,
                   top: "100%",
                   marginTop: "8px",
-                  width: "250px",
+                  width: isLargeScreen ? "250px" : "200px",
                   backgroundColor: "#282828",
                   borderRadius: "8px",
-                  boxShadow: "0 4px 32px rgba(0,0,0,0.2)",
+                  boxShadow: isLargeScreen ? "0 4px 32px rgba(0,0,0,0.2)" : "0 2px 16px rgba(0,0,0,0.3)",
                   padding: "8px 0",
                   zIndex: 1000,
+                  maxWidth: "90vw",
                 }}
               >
                 {isLoggedIn ? (
@@ -399,11 +402,12 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: "12px",
-                        padding: "8px 16px",
+                        gap: isLargeScreen ? "12px" : "10px",
+                        padding: isLargeScreen ? "8px 16px" : "12px 16px",
                         color: "white",
                         textDecoration: "none",
                         backgroundColor: "transparent",
+                        minHeight: isLargeScreen ? "auto" : "44px",
                       }}
                       onMouseEnter={(e) =>
                         (e.currentTarget.style.backgroundColor =
@@ -414,8 +418,8 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                       }
                       onClick={() => setShowProfileDropdown(false)}
                     >
-                      <User size={18} />
-                      <span>Your profile</span>
+                      <User size={isLargeScreen ? 18 : 16} />
+                      <span style={{ fontSize: isLargeScreen ? "14px" : "15px" }}>Your profile</span>
                     </Link>
                     <div
                       style={{
@@ -430,13 +434,14 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                         width: "100%",
                         display: "flex",
                         alignItems: "center",
-                        gap: "12px",
-                        padding: "8px 16px",
+                        gap: isLargeScreen ? "12px" : "10px",
+                        padding: isLargeScreen ? "8px 16px" : "12px 16px",
                         color: "white",
                         backgroundColor: "transparent",
                         border: "none",
                         cursor: "pointer",
                         textAlign: "left",
+                        minHeight: isLargeScreen ? "auto" : "44px",
                       }}
                       onMouseEnter={(e) =>
                         (e.currentTarget.style.backgroundColor =
@@ -446,8 +451,8 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                         (e.currentTarget.style.backgroundColor = "transparent")
                       }
                     >
-                      <LogOut size={18} />
-                      <span>Sign out</span>
+                      <LogOut size={isLargeScreen ? 18 : 16} />
+                      <span style={{ fontSize: isLargeScreen ? "14px" : "15px" }}>Sign out</span>
                     </button>
                   </>
                 ) : (
@@ -457,11 +462,12 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: "12px",
-                        padding: "8px 16px",
+                        gap: isLargeScreen ? "12px" : "10px",
+                        padding: isLargeScreen ? "8px 16px" : "12px 16px",
                         color: "white",
                         textDecoration: "none",
                         backgroundColor: "transparent",
+                        minHeight: isLargeScreen ? "auto" : "44px",
                       }}
                       onMouseEnter={(e) =>
                         (e.currentTarget.style.backgroundColor =
@@ -472,19 +478,20 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                       }
                       onClick={() => setShowProfileDropdown(false)}
                     >
-                      <User size={18} />
-                      <span>Sign in</span>
+                      <User size={isLargeScreen ? 18 : 16} />
+                      <span style={{ fontSize: isLargeScreen ? "14px" : "15px" }}>Sign in</span>
                     </Link>
                     <Link
                       href="/signup"
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: "12px",
-                        padding: "8px 16px",
+                        gap: isLargeScreen ? "12px" : "10px",
+                        padding: isLargeScreen ? "8px 16px" : "12px 16px",
                         color: "white",
                         textDecoration: "none",
                         backgroundColor: "transparent",
+                        minHeight: isLargeScreen ? "auto" : "44px",
                       }}
                       onMouseEnter={(e) =>
                         (e.currentTarget.style.backgroundColor =
@@ -495,8 +502,8 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                       }
                       onClick={() => setShowProfileDropdown(false)}
                     >
-                      <Settings size={18} />
-                      <span>Sign up</span>
+                      <Settings size={isLargeScreen ? 18 : 16} />
+                      <span style={{ fontSize: isLargeScreen ? "14px" : "15px" }}>Sign up</span>
                     </Link>
                   </>
                 )}

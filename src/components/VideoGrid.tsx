@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import VideoCard from "./VideoCard";
 import { Video } from "@/types";
 
@@ -8,6 +9,19 @@ interface VideoGridProps {
 }
 
 export default function VideoGrid({ videos }: VideoGridProps) {
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      // More aggressive mobile breakpoint for better mobile experience
+      setIsLargeScreen(window.innerWidth >= 1024);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   if (videos.length === 0) {
     return (
       <div style={{ textAlign: "center", padding: "48px 0" }}>
@@ -21,17 +35,37 @@ export default function VideoGrid({ videos }: VideoGridProps) {
     );
   }
 
-  return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+  // Responsive grid configuration
+  const getGridConfig = () => {
+    if (isLargeScreen) {
+      // Desktop: 4-5 columns with larger cards
+      return {
+        gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
         gap: "24px",
         padding: "0 8px",
+      };
+    } else {
+      // Mobile: Single column that takes full width
+      return {
+        gridTemplateColumns: "1fr",
+        gap: "8px",
+        padding: "0",
+        maxWidth: "100%",
+        width: "100%",
+      };
+    }
+  };
+
+  return (
+    <div
+      className="video-grid-mobile"
+      style={{
+        display: "grid",
+        ...getGridConfig(),
       }}
     >
       {videos.map((video) => (
-        <VideoCard key={video.id} video={video} />
+        <VideoCard key={video.id} video={video} isLargeScreen={isLargeScreen} />
       ))}
     </div>
   );
