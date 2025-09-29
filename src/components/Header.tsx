@@ -36,9 +36,46 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [showNotificationsDropdown, setShowNotificationsDropdown] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLargeScreen, setIsLargeScreen] = useState(false);
   const router = useRouter();
+
+  // Mock notification data
+  const notifications = [
+    {
+      id: 1,
+      type: "new_video",
+      title: "New video from Tony Hawk",
+      message: "Check out my latest skateboarding tricks!",
+      time: "2 minutes ago",
+      read: false,
+    },
+    {
+      id: 2,
+      type: "like",
+      title: "Your video got a like",
+      message: "Skateboard Tricks Compilation received 5 new likes",
+      time: "1 hour ago",
+      read: false,
+    },
+    {
+      id: 3,
+      type: "comment",
+      title: "New comment on your video",
+      message: "Amazing tricks! Keep it up!",
+      time: "3 hours ago",
+      read: true,
+    },
+    {
+      id: 4,
+      type: "subscription",
+      title: "New subscriber",
+      message: "SkateboardPro subscribed to your channel",
+      time: "1 day ago",
+      read: true,
+    },
+  ];
 
   useEffect(() => {
     // Check if user is logged in
@@ -72,6 +109,20 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [onSidebarToggle]);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('[data-dropdown]')) {
+        setShowProfileDropdown(false);
+        setShowNotificationsDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -314,42 +365,226 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
             <Upload size={20} />
           </button>
 
-          <button
-            style={{
-              background: "none",
-              border: "none",
-              color: "white",
-              padding: "8px",
-              borderRadius: "50%",
-              cursor: "pointer",
-              marginRight: "8px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              position: "relative",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor = "transparent")
-            }
-          >
-            <Bell size={20} />
-            <div
+          <div style={{ position: "relative" }} data-dropdown>
+            <button
+              onClick={() => setShowNotificationsDropdown(!showNotificationsDropdown)}
               style={{
-                position: "absolute",
-                top: "6px",
-                right: "6px",
-                width: "6px",
-                height: "6px",
-                backgroundColor: "#ff0000",
+                background: showNotificationsDropdown ? "rgba(255,255,255,0.1)" : "none",
+                border: "none",
+                color: "white",
+                padding: "8px",
                 borderRadius: "50%",
+                cursor: "pointer",
+                marginRight: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "relative",
               }}
-            />
-          </button>
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = showNotificationsDropdown ? "rgba(255,255,255,0.1)" : "transparent")
+              }
+            >
+              <Bell size={20} />
+              {notifications.some(n => !n.read) && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "6px",
+                    right: "6px",
+                    width: "6px",
+                    height: "6px",
+                    backgroundColor: "#ff0000",
+                    borderRadius: "50%",
+                  }}
+                />
+              )}
+            </button>
 
-          <div style={{ position: "relative" }}>
+            {/* Notifications Dropdown */}
+            {showNotificationsDropdown && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  right: "0",
+                  width: isLargeScreen ? "400px" : "320px",
+                  maxWidth: "90vw",
+                  backgroundColor: "#1a1a1a",
+                  border: "1px solid #333333",
+                  borderRadius: "12px",
+                  boxShadow: isLargeScreen ? "0 4px 32px rgba(0,0,0,0.2)" : "0 2px 16px rgba(0,0,0,0.3)",
+                  zIndex: 60,
+                  marginTop: "8px",
+                  maxHeight: "500px",
+                  overflow: "hidden",
+                }}
+              >
+                {/* Header */}
+                <div
+                  style={{
+                    padding: "16px 20px",
+                    borderBottom: "1px solid #333333",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <h3
+                    style={{
+                      color: "#ffffff",
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      margin: 0,
+                    }}
+                  >
+                    Notifications
+                  </h3>
+                  <button
+                    onClick={() => setShowNotificationsDropdown(false)}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "#cccccc",
+                      cursor: "pointer",
+                      padding: "4px",
+                      borderRadius: "4px",
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.backgroundColor = "#333333")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.backgroundColor = "transparent")
+                    }
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {/* Notifications List */}
+                <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+                  {notifications.length > 0 ? (
+                    notifications.map((notification) => (
+                      <div
+                        key={notification.id}
+                        style={{
+                          padding: "16px 20px",
+                          borderBottom: "1px solid #2a2a2a",
+                          backgroundColor: notification.read ? "transparent" : "#1a1a1a",
+                          cursor: "pointer",
+                          transition: "background-color 0.2s",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.backgroundColor = "#2a2a2a")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.backgroundColor = notification.read ? "transparent" : "#1a1a1a")
+                        }
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "flex-start",
+                            gap: "12px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "8px",
+                              height: "8px",
+                              backgroundColor: notification.read ? "transparent" : "#3b82f6",
+                              borderRadius: "50%",
+                              marginTop: "6px",
+                              flexShrink: 0,
+                            }}
+                          />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <h4
+                              style={{
+                                color: "#ffffff",
+                                fontSize: "14px",
+                                fontWeight: "500",
+                                margin: "0 0 4px 0",
+                                lineHeight: "1.4",
+                              }}
+                            >
+                              {notification.title}
+                            </h4>
+                            <p
+                              style={{
+                                color: "#cccccc",
+                                fontSize: "13px",
+                                margin: "0 0 4px 0",
+                                lineHeight: "1.4",
+                              }}
+                            >
+                              {notification.message}
+                            </p>
+                            <span
+                              style={{
+                                color: "#999999",
+                                fontSize: "12px",
+                              }}
+                            >
+                              {notification.time}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div
+                      style={{
+                        padding: "32px 20px",
+                        textAlign: "center",
+                        color: "#cccccc",
+                      }}
+                    >
+                      <Bell size={32} style={{ marginBottom: "12px", opacity: 0.5 }} />
+                      <p style={{ margin: 0, fontSize: "14px" }}>
+                        No notifications yet
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer */}
+                {notifications.length > 0 && (
+                  <div
+                    style={{
+                      padding: "12px 20px",
+                      borderTop: "1px solid #333333",
+                      textAlign: "center",
+                    }}
+                  >
+                    <button
+                      style={{
+                        background: "none",
+                        border: "none",
+                        color: "#3b82f6",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                        fontWeight: "500",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.textDecoration = "underline")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.textDecoration = "none")
+                      }
+                    >
+                      View all notifications
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div style={{ position: "relative" }} data-dropdown>
             <button
               onClick={() => setShowProfileDropdown(!showProfileDropdown)}
               style={{
