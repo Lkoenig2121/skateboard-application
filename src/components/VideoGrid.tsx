@@ -49,9 +49,10 @@ export default function VideoGrid({ videos }: VideoGridProps) {
       return {
         gridTemplateColumns: "1fr",
         gap: "8px",
-        padding: "0",
+        padding: "0 16px",
         maxWidth: "100%",
         width: "100%",
+        boxSizing: "border-box",
       };
     }
   };
@@ -61,6 +62,8 @@ export default function VideoGrid({ videos }: VideoGridProps) {
       className="video-grid-mobile"
       style={{
         display: "grid",
+        width: "100%",
+        maxWidth: "100%",
         ...getGridConfig(),
       }}
     >

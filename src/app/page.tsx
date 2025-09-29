@@ -73,8 +73,10 @@ export default function Home() {
         backgroundColor: "#0f0f0f",
         margin: 0,
         padding: 0,
-        width: "100%",
+        width: "100vw",
+        maxWidth: "100vw",
         position: "relative",
+        overflowX: "hidden",
       }}
     >
       <Header onSearch={setSearchQuery} onSidebarToggle={setIsSidebarOpen} />
@@ -105,32 +107,45 @@ export default function Home() {
           transition: "margin-left 0.3s ease",
           padding: "16px 0",
           marginLeft: isSidebarOpen ? "240px" : "0",
+          width: "100vw",
+          maxWidth: "100vw",
         }}
       >
-        {/* Loading State */}
-        {loading && (
-          <div className="text-center py-12">
-            <div className="w-10 h-10 border-4 border-gray-700 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-300 text-base">
-              Loading awesome{" "}
-              {selectedCategory === "all" ? "extreme sports" : selectedCategory}{" "}
-              videos...
-            </p>
-          </div>
-        )}
+        <div
+          style={{
+            width: "100%",
+            margin: "0",
+            padding: "0",
+            maxWidth: "none",
+          }}
+        >
+          {/* Loading State */}
+          {loading && (
+            <div className="text-center py-12">
+              <div className="w-10 h-10 border-4 border-gray-700 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-300 text-base">
+                Loading awesome{" "}
+                {selectedCategory === "all"
+                  ? "extreme sports"
+                  : selectedCategory}{" "}
+                videos...
+              </p>
+            </div>
+          )}
 
-        {/* Error State */}
-        {error && (
-          <div className="text-center py-12 bg-red-900 rounded-lg border border-red-700 mx-4">
-            <p className="text-red-300 text-base mb-2">⚠️ {error}</p>
-            <p className="text-gray-400 text-sm">
-              Please configure your YouTube API key in .env.local
-            </p>
-          </div>
-        )}
+          {/* Error State */}
+          {error && (
+            <div className="text-center py-12 bg-red-900 rounded-lg border border-red-700 mx-4">
+              <p className="text-red-300 text-base mb-2">⚠️ {error}</p>
+              <p className="text-gray-400 text-sm">
+                Please configure your YouTube API key in .env.local
+              </p>
+            </div>
+          )}
 
-        {/* Video Grid */}
-        {!loading && <VideoGrid videos={filteredVideos} />}
+          {/* Video Grid */}
+          {!loading && <VideoGrid videos={filteredVideos} />}
+        </div>
       </main>
     </div>
   );
