@@ -60,13 +60,17 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
     const handleResize = () => {
       const isLarge = window.innerWidth >= 768;
       setIsLargeScreen(isLarge);
-      
-      // Only auto-open on very large screens (1200px+)
-      if (window.innerWidth >= 1200) {
+
+      // Auto-open on very large screens (1200px+), but allow manual toggle
+      if (window.innerWidth >= 1200 && !isSidebarOpen) {
         setIsSidebarOpen(true);
         onSidebarToggle?.(true);
       }
-      // Don't auto-close on smaller screens - let user control it manually
+      // On smaller screens, close sidebar if it was open
+      if (window.innerWidth < 1200 && isSidebarOpen) {
+        setIsSidebarOpen(false);
+        onSidebarToggle?.(false);
+      }
     };
 
     handleResize();
@@ -139,7 +143,9 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)")
             }
             onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor = isSidebarOpen ? "rgba(255,255,255,0.1)" : "transparent")
+              (e.currentTarget.style.backgroundColor = isSidebarOpen
+                ? "rgba(255,255,255,0.1)"
+                : "transparent")
             }
           >
             <Menu size={20} />
@@ -355,7 +361,9 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                 width: isLargeScreen ? "32px" : "28px",
                 height: isLargeScreen ? "32px" : "28px",
                 backgroundColor: isLoggedIn ? "#3ea6ff" : "#333333",
-                border: isLargeScreen ? "2px solid rgba(255,255,255,0.1)" : "1px solid rgba(255,255,255,0.1)",
+                border: isLargeScreen
+                  ? "2px solid rgba(255,255,255,0.1)"
+                  : "1px solid rgba(255,255,255,0.1)",
                 borderRadius: "50%",
                 color: "white",
                 cursor: "pointer",
@@ -365,15 +373,21 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                 alignItems: "center",
                 justifyContent: "center",
                 transition: "all 0.2s ease",
-                boxShadow: isLargeScreen ? "0 2px 8px rgba(0,0,0,0.3)" : "0 1px 4px rgba(0,0,0,0.2)",
+                boxShadow: isLargeScreen
+                  ? "0 2px 8px rgba(0,0,0,0.3)"
+                  : "0 1px 4px rgba(0,0,0,0.2)",
                 minWidth: "28px",
                 minHeight: "28px",
               }}
               onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = isLoggedIn ? "#2b8ce6" : "#444444")
+                (e.currentTarget.style.backgroundColor = isLoggedIn
+                  ? "#2b8ce6"
+                  : "#444444")
               }
               onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = isLoggedIn ? "#3ea6ff" : "#333333")
+                (e.currentTarget.style.backgroundColor = isLoggedIn
+                  ? "#3ea6ff"
+                  : "#333333")
               }
             >
               {isLoggedIn ? "U" : <User size={isLargeScreen ? 16 : 14} />}
@@ -389,7 +403,9 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                   width: isLargeScreen ? "250px" : "200px",
                   backgroundColor: "#282828",
                   borderRadius: "8px",
-                  boxShadow: isLargeScreen ? "0 4px 32px rgba(0,0,0,0.2)" : "0 2px 16px rgba(0,0,0,0.3)",
+                  boxShadow: isLargeScreen
+                    ? "0 4px 32px rgba(0,0,0,0.2)"
+                    : "0 2px 16px rgba(0,0,0,0.3)",
                   padding: "8px 0",
                   zIndex: 1000,
                   maxWidth: "90vw",
@@ -419,7 +435,11 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                       onClick={() => setShowProfileDropdown(false)}
                     >
                       <User size={isLargeScreen ? 18 : 16} />
-                      <span style={{ fontSize: isLargeScreen ? "14px" : "15px" }}>Your profile</span>
+                      <span
+                        style={{ fontSize: isLargeScreen ? "14px" : "15px" }}
+                      >
+                        Your profile
+                      </span>
                     </Link>
                     <div
                       style={{
@@ -452,7 +472,11 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                       }
                     >
                       <LogOut size={isLargeScreen ? 18 : 16} />
-                      <span style={{ fontSize: isLargeScreen ? "14px" : "15px" }}>Sign out</span>
+                      <span
+                        style={{ fontSize: isLargeScreen ? "14px" : "15px" }}
+                      >
+                        Sign out
+                      </span>
                     </button>
                   </>
                 ) : (
@@ -479,7 +503,11 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                       onClick={() => setShowProfileDropdown(false)}
                     >
                       <User size={isLargeScreen ? 18 : 16} />
-                      <span style={{ fontSize: isLargeScreen ? "14px" : "15px" }}>Sign in</span>
+                      <span
+                        style={{ fontSize: isLargeScreen ? "14px" : "15px" }}
+                      >
+                        Sign in
+                      </span>
                     </Link>
                     <Link
                       href="/signup"
@@ -503,7 +531,11 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                       onClick={() => setShowProfileDropdown(false)}
                     >
                       <Settings size={isLargeScreen ? 18 : 16} />
-                      <span style={{ fontSize: isLargeScreen ? "14px" : "15px" }}>Sign up</span>
+                      <span
+                        style={{ fontSize: isLargeScreen ? "14px" : "15px" }}
+                      >
+                        Sign up
+                      </span>
                     </Link>
                   </>
                 )}
@@ -520,7 +552,7 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
           top: "56px",
           left: 0,
           height: "calc(100vh - 56px)",
-          width: isSidebarOpen ? "240px" : "0",
+          width: isSidebarOpen ? "240px" : isLargeScreen ? "72px" : "0",
           backgroundColor: "#0f0f0f",
           borderRight: "1px solid #303030",
           transition: "width 0.3s ease",
@@ -530,10 +562,11 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
       >
         <div
           style={{
-            width: "240px",
+            width: isSidebarOpen ? "240px" : "72px",
             padding: "12px 0",
             overflowY: "auto",
             height: "100%",
+            transition: "width 0.3s ease",
           }}
         >
           {/* Main Navigation */}
@@ -549,11 +582,12 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "24px",
-                padding: "8px 24px",
+                gap: isSidebarOpen ? "24px" : "0",
+                padding: isSidebarOpen ? "8px 24px" : "8px 16px",
                 color: "white",
                 textDecoration: "none",
                 backgroundColor: "transparent",
+                justifyContent: isSidebarOpen ? "flex-start" : "center",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor =
@@ -564,16 +598,19 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               }
             >
               <Home size={20} />
-              <span style={{ fontSize: "14px" }}>Home</span>
+              {isSidebarOpen && <span style={{ fontSize: "14px" }}>Home</span>}
             </Link>
-            <div
+            <Link
+              href="/shorts"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "24px",
-                padding: "8px 24px",
+                gap: isSidebarOpen ? "24px" : "0",
+                padding: isSidebarOpen ? "8px 24px" : "8px 16px",
                 color: "white",
-                cursor: "pointer",
+                textDecoration: "none",
+                backgroundColor: "transparent",
+                justifyContent: isSidebarOpen ? "flex-start" : "center",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor =
@@ -584,16 +621,21 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               }
             >
               <Play size={20} />
-              <span style={{ fontSize: "14px" }}>Shorts</span>
-            </div>
-            <div
+              {isSidebarOpen && (
+                <span style={{ fontSize: "14px" }}>Shorts</span>
+              )}
+            </Link>
+            <Link
+              href="/subscriptions"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "24px",
-                padding: "8px 24px",
+                gap: isSidebarOpen ? "24px" : "0",
+                padding: isSidebarOpen ? "8px 24px" : "8px 16px",
                 color: "white",
-                cursor: "pointer",
+                textDecoration: "none",
+                backgroundColor: "transparent",
+                justifyContent: isSidebarOpen ? "flex-start" : "center",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor =
@@ -604,8 +646,10 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               }
             >
               <PlaySquare size={20} />
-              <span style={{ fontSize: "14px" }}>Subscriptions</span>
-            </div>
+              {isSidebarOpen && (
+                <span style={{ fontSize: "14px" }}>Subscriptions</span>
+              )}
+            </Link>
           </div>
 
           {/* You section */}
@@ -616,24 +660,27 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               marginBottom: "12px",
             }}
           >
-            <div
-              style={{
-                padding: "8px 24px",
-                color: "white",
-                fontSize: "16px",
-                fontWeight: "500",
-              }}
-            >
-              You
-            </div>
+            {isSidebarOpen && (
+              <div
+                style={{
+                  padding: "8px 24px",
+                  color: "white",
+                  fontSize: "16px",
+                  fontWeight: "500",
+                }}
+              >
+                You
+              </div>
+            )}
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "24px",
-                padding: "8px 24px",
+                gap: isSidebarOpen ? "24px" : "0",
+                padding: isSidebarOpen ? "8px 24px" : "8px 16px",
                 color: "white",
                 cursor: "pointer",
+                justifyContent: isSidebarOpen ? "flex-start" : "center",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor =
@@ -644,16 +691,21 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               }
             >
               <User size={20} />
-              <span style={{ fontSize: "14px" }}>Your channel</span>
+              {isSidebarOpen && (
+                <span style={{ fontSize: "14px" }}>Your channel</span>
+              )}
             </div>
-            <div
+            <Link
+              href="/history"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "24px",
-                padding: "8px 24px",
+                gap: isSidebarOpen ? "24px" : "0",
+                padding: isSidebarOpen ? "8px 24px" : "8px 16px",
                 color: "white",
-                cursor: "pointer",
+                textDecoration: "none",
+                backgroundColor: "transparent",
+                justifyContent: isSidebarOpen ? "flex-start" : "center",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor =
@@ -664,16 +716,21 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               }
             >
               <History size={20} />
-              <span style={{ fontSize: "14px" }}>History</span>
-            </div>
-            <div
+              {isSidebarOpen && (
+                <span style={{ fontSize: "14px" }}>History</span>
+              )}
+            </Link>
+            <Link
+              href="/watch-later"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "24px",
-                padding: "8px 24px",
+                gap: isSidebarOpen ? "24px" : "0",
+                padding: isSidebarOpen ? "8px 24px" : "8px 16px",
                 color: "white",
-                cursor: "pointer",
+                textDecoration: "none",
+                backgroundColor: "transparent",
+                justifyContent: isSidebarOpen ? "flex-start" : "center",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor =
@@ -684,16 +741,19 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               }
             >
               <Clock size={20} />
-              <span style={{ fontSize: "14px" }}>Watch later</span>
-            </div>
+              {isSidebarOpen && (
+                <span style={{ fontSize: "14px" }}>Watch later</span>
+              )}
+            </Link>
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "24px",
-                padding: "8px 24px",
+                gap: isSidebarOpen ? "24px" : "0",
+                padding: isSidebarOpen ? "8px 24px" : "8px 16px",
                 color: "white",
                 cursor: "pointer",
+                justifyContent: isSidebarOpen ? "flex-start" : "center",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor =
@@ -704,30 +764,37 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               }
             >
               <ThumbsUp size={20} />
-              <span style={{ fontSize: "14px" }}>Liked videos</span>
+              {isSidebarOpen && (
+                <span style={{ fontSize: "14px" }}>Liked videos</span>
+              )}
             </div>
           </div>
 
           {/* Explore section */}
           <div>
-            <div
-              style={{
-                padding: "8px 24px",
-                color: "white",
-                fontSize: "16px",
-                fontWeight: "500",
-              }}
-            >
-              Explore
-            </div>
-            <div
+            {isSidebarOpen && (
+              <div
+                style={{
+                  padding: "8px 24px",
+                  color: "white",
+                  fontSize: "16px",
+                  fontWeight: "500",
+                }}
+              >
+                Explore
+              </div>
+            )}
+            <Link
+              href="/kickflips"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "24px",
-                padding: "8px 24px",
+                gap: isSidebarOpen ? "24px" : "0",
+                padding: isSidebarOpen ? "8px 24px" : "8px 16px",
                 color: "white",
-                cursor: "pointer",
+                textDecoration: "none",
+                backgroundColor: "transparent",
+                justifyContent: isSidebarOpen ? "flex-start" : "center",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor =
@@ -738,16 +805,21 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               }
             >
               <Flame size={20} />
-              <span style={{ fontSize: "14px" }}>Trending</span>
-            </div>
-            <div
+              {isSidebarOpen && (
+                <span style={{ fontSize: "14px" }}>Kickflips</span>
+              )}
+            </Link>
+            <Link
+              href="/compilations"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "24px",
-                padding: "8px 24px",
+                gap: isSidebarOpen ? "24px" : "0",
+                padding: isSidebarOpen ? "8px 24px" : "8px 16px",
                 color: "white",
-                cursor: "pointer",
+                textDecoration: "none",
+                backgroundColor: "transparent",
+                justifyContent: isSidebarOpen ? "flex-start" : "center",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor =
@@ -757,37 +829,22 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                 (e.currentTarget.style.backgroundColor = "transparent")
               }
             >
-              <Music size={20} />
-              <span style={{ fontSize: "14px" }}>Music</span>
-            </div>
-            <div
+              <PlaySquare size={20} />
+              {isSidebarOpen && (
+                <span style={{ fontSize: "14px" }}>Compilations</span>
+              )}
+            </Link>
+            <Link
+              href="/street-skating"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "24px",
-                padding: "8px 24px",
+                gap: isSidebarOpen ? "24px" : "0",
+                padding: isSidebarOpen ? "8px 24px" : "8px 16px",
                 color: "white",
-                cursor: "pointer",
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor =
-                  "rgba(255,255,255,0.1)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = "transparent")
-              }
-            >
-              <Gamepad2 size={20} />
-              <span style={{ fontSize: "14px" }}>Gaming</span>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "24px",
-                padding: "8px 24px",
-                color: "white",
-                cursor: "pointer",
+                textDecoration: "none",
+                backgroundColor: "transparent",
+                justifyContent: isSidebarOpen ? "flex-start" : "center",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor =
@@ -798,8 +855,35 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               }
             >
               <Trophy size={20} />
-              <span style={{ fontSize: "14px" }}>Sports</span>
-            </div>
+              {isSidebarOpen && (
+                <span style={{ fontSize: "14px" }}>Street Skating</span>
+              )}
+            </Link>
+            <Link
+              href="/skate-park"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: isSidebarOpen ? "24px" : "0",
+                padding: isSidebarOpen ? "8px 24px" : "8px 16px",
+                color: "white",
+                textDecoration: "none",
+                backgroundColor: "transparent",
+                justifyContent: isSidebarOpen ? "flex-start" : "center",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  "rgba(255,255,255,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
+            >
+              <Gamepad2 size={20} />
+              {isSidebarOpen && (
+                <span style={{ fontSize: "14px" }}>Skate Park</span>
+              )}
+            </Link>
           </div>
 
           {/* Profile Section */}
@@ -810,19 +894,21 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               marginTop: "12px",
             }}
           >
-            <div
-              style={{
-                fontSize: "14px",
-                fontWeight: "500",
-                color: "#aaaaaa",
-                padding: "8px 24px 12px",
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-              }}
-            >
-              Account
-            </div>
-            
+            {isSidebarOpen && (
+              <div
+                style={{
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  color: "#aaaaaa",
+                  padding: "8px 24px 12px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                }}
+              >
+                Account
+              </div>
+            )}
+
             {/* Sign In / Profile */}
             {isLoggedIn ? (
               <Link
@@ -830,11 +916,12 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "24px",
-                  padding: "8px 24px",
+                  gap: isSidebarOpen ? "24px" : "0",
+                  padding: isSidebarOpen ? "8px 24px" : "8px 16px",
                   color: "white",
                   textDecoration: "none",
                   backgroundColor: "transparent",
+                  justifyContent: isSidebarOpen ? "flex-start" : "center",
                 }}
                 onMouseEnter={(e) =>
                   (e.currentTarget.style.backgroundColor =
@@ -860,17 +947,20 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                 >
                   U
                 </div>
-                <span style={{ fontSize: "14px" }}>Your Channel</span>
+                {isSidebarOpen && (
+                  <span style={{ fontSize: "14px" }}>Your Channel</span>
+                )}
               </Link>
             ) : (
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "24px",
-                  padding: "8px 24px",
+                  gap: isSidebarOpen ? "24px" : "0",
+                  padding: isSidebarOpen ? "8px 24px" : "8px 16px",
                   color: "white",
                   cursor: "pointer",
+                  justifyContent: isSidebarOpen ? "flex-start" : "center",
                 }}
                 onMouseEnter={(e) =>
                   (e.currentTarget.style.backgroundColor =
@@ -900,7 +990,9 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                 >
                   <User size={16} />
                 </div>
-                <span style={{ fontSize: "14px" }}>Sign In</span>
+                {isSidebarOpen && (
+                  <span style={{ fontSize: "14px" }}>Sign In</span>
+                )}
               </div>
             )}
 
@@ -909,10 +1001,11 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "24px",
-                padding: "8px 24px",
+                gap: isSidebarOpen ? "24px" : "0",
+                padding: isSidebarOpen ? "8px 24px" : "8px 16px",
                 color: "white",
                 cursor: "pointer",
+                justifyContent: isSidebarOpen ? "flex-start" : "center",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor =
@@ -923,7 +1016,9 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               }
             >
               <Settings size={20} />
-              <span style={{ fontSize: "14px" }}>Settings</span>
+              {isSidebarOpen && (
+                <span style={{ fontSize: "14px" }}>Settings</span>
+              )}
             </div>
 
             {/* Logout (only if logged in) */}
@@ -932,10 +1027,11 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "24px",
-                  padding: "8px 24px",
+                  gap: isSidebarOpen ? "24px" : "0",
+                  padding: isSidebarOpen ? "8px 24px" : "8px 16px",
                   color: "white",
                   cursor: "pointer",
+                  justifyContent: isSidebarOpen ? "flex-start" : "center",
                 }}
                 onMouseEnter={(e) =>
                   (e.currentTarget.style.backgroundColor =
@@ -956,7 +1052,9 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                 }}
               >
                 <LogOut size={20} />
-                <span style={{ fontSize: "14px" }}>Sign Out</span>
+                {isSidebarOpen && (
+                  <span style={{ fontSize: "14px" }}>Sign Out</span>
+                )}
               </div>
             )}
           </div>

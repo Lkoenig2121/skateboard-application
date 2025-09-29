@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Clock } from "lucide-react";
+import { Clock, Plus, Check } from "lucide-react";
 import { Video } from "@/types";
+import { useState, useEffect } from "react";
 
 interface VideoCardProps {
   video: Video;
@@ -56,6 +57,72 @@ function formatTimeAgo(date: Date | string): string {
 }
 
 export default function VideoCard({ video, isLargeScreen = true }: VideoCardProps) {
+  const [isInWatchLater, setIsInWatchLater] = useState(false);
+
+  useEffect(() => {
+    // Check if video is in watch later
+    const checkWatchLater = () => {
+      try {
+        const watchLaterData = localStorage.getItem("watchLater");
+        if (watchLaterData) {
+          const watchLaterVideos = JSON.parse(watchLaterData);
+          const isInList = watchLaterVideos.some((v: Video) => v.id === video.id);
+          setIsInWatchLater(isInList);
+        }
+      } catch (error) {
+        console.error("Error checking watch later:", error);
+      }
+    };
+
+    checkWatchLater();
+  }, [video.id]);
+
+  const addToWatchLater = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    try {
+      const watchLaterData = localStorage.getItem("watchLater");
+      let watchLaterVideos = watchLaterData ? JSON.parse(watchLaterData) : [];
+      
+      if (isInWatchLater) {
+        // Remove from watch later
+        watchLaterVideos = watchLaterVideos.filter((v: Video) => v.id !== video.id);
+        setIsInWatchLater(false);
+      } else {
+        // Add to watch later
+        watchLaterVideos.push(video);
+        setIsInWatchLater(true);
+      }
+      
+      localStorage.setItem("watchLater", JSON.stringify(watchLaterVideos));
+    } catch (error) {
+      console.error("Error updating watch later:", error);
+    }
+  };
+
+  const addToHistory = () => {
+    try {
+      const historyData = localStorage.getItem("watchHistory");
+      let historyVideos = historyData ? JSON.parse(historyData) : [];
+      
+      // Remove if already exists to avoid duplicates
+      historyVideos = historyVideos.filter((v: Video) => v.id !== video.id);
+      
+      // Add to beginning of array
+      historyVideos.unshift(video);
+      
+      // Keep only last 100 videos
+      if (historyVideos.length > 100) {
+        historyVideos = historyVideos.slice(0, 100);
+      }
+      
+      localStorage.setItem("watchHistory", JSON.stringify(historyVideos));
+    } catch (error) {
+      console.error("Error updating history:", error);
+    }
+  };
+
   return (
     <div
       className="video-card-mobile"
@@ -73,7 +140,7 @@ export default function VideoCard({ video, isLargeScreen = true }: VideoCardProp
       }}
     >
       {/* Thumbnail */}
-      <Link href={`/video/${video.id}`}>
+      <Link href={`/video/${video.id}`} onClick={addToHistory}>
         <div
           style={{
             position: "relative",
@@ -84,6 +151,18 @@ export default function VideoCard({ video, isLargeScreen = true }: VideoCardProp
             marginBottom: isLargeScreen ? "12px" : "8px",
             aspectRatio: "16/9",
             boxShadow: isLargeScreen ? "0 1px 3px rgba(0, 0, 0, 0.1)" : "0 1px 2px rgba(0, 0, 0, 0.1)",
+          }}
+          onMouseEnter={(e) => {
+            const button = e.currentTarget.querySelector('button[onClick]') as HTMLButtonElement;
+            if (button) {
+              button.style.opacity = "1";
+            }
+          }}
+          onMouseLeave={(e) => {
+            const button = e.currentTarget.querySelector('button[onClick]') as HTMLButtonElement;
+            if (button) {
+              button.style.opacity = "0";
+            }
           }}
         >
           <Image
@@ -122,6 +201,43 @@ export default function VideoCard({ video, isLargeScreen = true }: VideoCardProp
           >
             {formatDuration(video.duration)}
           </div>
+
+          {/* Watch Later Button */}
+          <button
+            onClick={addToWatchLater}
+            style={{
+              position: "absolute",
+              top: isLargeScreen ? "8px" : "4px",
+              right: isLargeScreen ? "8px" : "4px",
+              backgroundColor: "rgba(0, 0, 0, 0.8)",
+              color: "white",
+              border: "none",
+              borderRadius: "50%",
+              width: isLargeScreen ? "32px" : "28px",
+              height: isLargeScreen ? "32px" : "28px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              backdropFilter: "blur(4px)",
+              transition: "all 0.2s ease",
+              opacity: 0,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = "1";
+              e.currentTarget.style.backgroundColor = "rgba(0, 0, 0, 0.9)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = "0.7";
+              e.currentTarget.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+            }}
+          >
+            {isInWatchLater ? (
+              <Check size={isLargeScreen ? 16 : 14} />
+            ) : (
+              <Plus size={isLargeScreen ? 16 : 14} />
+            )}
+          </button>
         </div>
       </Link>
 
@@ -164,7 +280,7 @@ export default function VideoCard({ video, isLargeScreen = true }: VideoCardProp
 
         {/* Video Details */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <Link href={`/video/${video.id}`}>
+          <Link href={`/video/${video.id}`} onClick={addToHistory}>
             <h3
               style={{
                 fontSize: isLargeScreen ? "14px" : "13px",
