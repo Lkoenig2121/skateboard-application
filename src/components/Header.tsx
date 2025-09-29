@@ -354,8 +354,8 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               style={{
                 width: "32px",
                 height: "32px",
-                backgroundColor: "#3ea6ff",
-                border: "none",
+                backgroundColor: isLoggedIn ? "#3ea6ff" : "#333333",
+                border: "2px solid rgba(255,255,255,0.1)",
                 borderRadius: "50%",
                 color: "white",
                 cursor: "pointer",
@@ -364,9 +364,17 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                transition: "all 0.2s ease",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
               }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = isLoggedIn ? "#2b8ce6" : "#444444")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = isLoggedIn ? "#3ea6ff" : "#333333")
+              }
             >
-              U
+              {isLoggedIn ? "U" : <User size={16} />}
             </button>
 
             {showProfileDropdown && (
@@ -785,6 +793,165 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               <Trophy size={20} />
               <span style={{ fontSize: "14px" }}>Sports</span>
             </div>
+          </div>
+
+          {/* Profile Section */}
+          <div
+            style={{
+              paddingTop: "12px",
+              borderTop: "1px solid #303030",
+              marginTop: "12px",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "14px",
+                fontWeight: "500",
+                color: "#aaaaaa",
+                padding: "8px 24px 12px",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+              }}
+            >
+              Account
+            </div>
+            
+            {/* Sign In / Profile */}
+            {isLoggedIn ? (
+              <Link
+                href="/profile"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "24px",
+                  padding: "8px 24px",
+                  color: "white",
+                  textDecoration: "none",
+                  backgroundColor: "transparent",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor =
+                    "rgba(255,255,255,0.1)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "transparent")
+                }
+              >
+                <div
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    backgroundColor: "#1c62b9",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "white",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
+                >
+                  U
+                </div>
+                <span style={{ fontSize: "14px" }}>Your Channel</span>
+              </Link>
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "24px",
+                  padding: "8px 24px",
+                  color: "white",
+                  cursor: "pointer",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor =
+                    "rgba(255,255,255,0.1)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "transparent")
+                }
+                onClick={() => {
+                  setIsSidebarOpen(false);
+                  router.push("/login");
+                }}
+              >
+                <div
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    backgroundColor: "#333333",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "white",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
+                >
+                  <User size={16} />
+                </div>
+                <span style={{ fontSize: "14px" }}>Sign In</span>
+              </div>
+            )}
+
+            {/* Settings */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "24px",
+                padding: "8px 24px",
+                color: "white",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor =
+                  "rgba(255,255,255,0.1)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "transparent")
+              }
+            >
+              <Settings size={20} />
+              <span style={{ fontSize: "14px" }}>Settings</span>
+            </div>
+
+            {/* Logout (only if logged in) */}
+            {isLoggedIn && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "24px",
+                  padding: "8px 24px",
+                  color: "white",
+                  cursor: "pointer",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor =
+                    "rgba(255,255,255,0.1)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.backgroundColor = "transparent")
+                }
+                onClick={async () => {
+                  try {
+                    await fetch("/api/auth/logout", { method: "POST" });
+                    setIsLoggedIn(false);
+                    setIsSidebarOpen(false);
+                    router.push("/");
+                  } catch (error) {
+                    console.error("Logout failed:", error);
+                  }
+                }}
+              >
+                <LogOut size={20} />
+                <span style={{ fontSize: "14px" }}>Sign Out</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
