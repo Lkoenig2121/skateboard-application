@@ -23,10 +23,22 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"videos" | "about">("videos");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     fetchUserProfile();
+    
+    // Check screen size for responsive behavior
+    const handleResize = () => {
+      const isLarge = window.innerWidth >= 768;
+      setIsLargeScreen(isLarge);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const fetchUserProfile = async () => {
@@ -89,73 +101,117 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: "100vh", backgroundColor: "#f9fafb" }}>
-        <Header />
-        <div
-          style={{ maxWidth: "1200px", margin: "0 auto", padding: "24px 16px" }}
+      <div
+        style={{
+          minHeight: "100vh",
+          backgroundColor: "#0f0f0f",
+          margin: 0,
+          padding: 0,
+          width: "100%",
+          position: "relative",
+        }}
+      >
+        <Header onSidebarToggle={setIsSidebarOpen} />
+        <main
+          className="main-content-mobile"
+          style={{
+            transition: "margin-left 0.3s ease",
+            padding: "16px 0",
+            marginLeft: isSidebarOpen ? "240px" : "0",
+          }}
         >
-          <div style={{ textAlign: "center", padding: "48px 0" }}>
-            <div
-              style={{
-                width: "40px",
-                height: "40px",
-                border: "4px solid #f3f4f6",
-                borderTop: "4px solid #3b82f6",
-                borderRadius: "50%",
-                animation: "spin 1s linear infinite",
-                margin: "0 auto 16px",
-              }}
-            ></div>
-            <p style={{ color: "#6b7280", fontSize: "16px" }}>
-              Loading profile...
-            </p>
+          <div
+            style={{
+              maxWidth: "1200px",
+              margin: "0 auto",
+              padding: "24px 16px",
+            }}
+          >
+            <div style={{ textAlign: "center", padding: "48px 0" }}>
+              <div
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  border: "4px solid #333333",
+                  borderTop: "4px solid #3b82f6",
+                  borderRadius: "50%",
+                  animation: "spin 1s linear infinite",
+                  margin: "0 auto 16px",
+                }}
+              ></div>
+              <p style={{ color: "#cccccc", fontSize: "16px" }}>
+                Loading profile...
+              </p>
+            </div>
           </div>
-        </div>
+        </main>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div style={{ minHeight: "100vh", backgroundColor: "#f9fafb" }}>
-        <Header />
-        <div
-          style={{ maxWidth: "1200px", margin: "0 auto", padding: "24px 16px" }}
+      <div
+        style={{
+          minHeight: "100vh",
+          backgroundColor: "#0f0f0f",
+          margin: 0,
+          padding: 0,
+          width: "100%",
+          position: "relative",
+        }}
+      >
+        <Header onSidebarToggle={setIsSidebarOpen} />
+        <main
+          className="main-content-mobile"
+          style={{
+            transition: "margin-left 0.3s ease",
+            padding: "16px 0",
+            marginLeft: isSidebarOpen ? "240px" : "0",
+          }}
         >
           <div
             style={{
-              textAlign: "center",
-              padding: "48px 24px",
-              backgroundColor: "#fef2f2",
-              borderRadius: "12px",
-              border: "1px solid #fecaca",
+              maxWidth: "1200px",
+              margin: "0 auto",
+              padding: "24px 16px",
             }}
           >
-            <p
+            <div
               style={{
-                color: "#dc2626",
-                fontSize: "16px",
-                marginBottom: "16px",
+                textAlign: "center",
+                padding: "48px 24px",
+                backgroundColor: "#1a1a1a",
+                borderRadius: "12px",
+                border: "1px solid #333333",
               }}
             >
-              ⚠️ {error}
-            </p>
-            <button
-              onClick={() => router.push("/")}
-              style={{
-                backgroundColor: "#3b82f6",
-                color: "white",
-                padding: "12px 24px",
-                borderRadius: "8px",
-                border: "none",
-                cursor: "pointer",
-                fontWeight: "500",
-              }}
-            >
-              Back to Home
-            </button>
+              <p
+                style={{
+                  color: "#ff6b6b",
+                  fontSize: "16px",
+                  marginBottom: "16px",
+                }}
+              >
+                ⚠️ {error}
+              </p>
+              <button
+                onClick={() => router.push("/")}
+                style={{
+                  backgroundColor: "#3b82f6",
+                  color: "white",
+                  padding: "12px 24px",
+                  borderRadius: "8px",
+                  border: "none",
+                  cursor: "pointer",
+                  fontWeight: "500",
+                }}
+              >
+                Back to Home
+              </button>
+            </div>
           </div>
-        </div>
+        </main>
       </div>
     );
   }
@@ -165,44 +221,69 @@ export default function ProfilePage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#f9fafb" }}>
-      <Header />
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#0f0f0f",
+        margin: 0,
+        padding: 0,
+        width: "100%",
+        position: "relative",
+      }}
+    >
+      <Header onSidebarToggle={setIsSidebarOpen} />
 
       <main
-        style={{ maxWidth: "1200px", margin: "0 auto", padding: "24px 16px" }}
+        className="main-content-mobile"
+        style={{
+          transition: "margin-left 0.3s ease",
+          padding: "16px 0",
+          marginLeft: isSidebarOpen ? "240px" : "0",
+        }}
       >
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "24px 16px",
+          }}
+        >
         {/* Profile Header */}
         <div
           style={{
-            backgroundColor: "white",
+            backgroundColor: "#1a1a1a",
             borderRadius: "12px",
-            padding: "32px",
+            padding: isLargeScreen ? "32px" : "24px",
             marginBottom: "24px",
-            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.3)",
+            border: "1px solid #333333",
           }}
         >
           <div
             style={{
               display: "flex",
               alignItems: "flex-start",
-              gap: "24px",
+              gap: isLargeScreen ? "24px" : "16px",
               marginBottom: "24px",
+              flexDirection: isLargeScreen ? "row" : "column",
+              textAlign: isLargeScreen ? "left" : "center",
             }}
           >
             {/* Avatar */}
             <div
               style={{
-                width: "120px",
-                height: "120px",
+                width: isLargeScreen ? "120px" : "100px",
+                height: isLargeScreen ? "120px" : "100px",
                 background: "linear-gradient(135deg, #3b82f6, #8b5cf6)",
                 borderRadius: "50%",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 color: "white",
-                fontSize: "48px",
+                fontSize: isLargeScreen ? "48px" : "40px",
                 fontWeight: "bold",
                 flexShrink: 0,
+                margin: isLargeScreen ? "0" : "0 auto",
               }}
             >
               {user.username.charAt(0).toUpperCase()}
@@ -216,13 +297,15 @@ export default function ProfilePage() {
                   alignItems: "center",
                   gap: "12px",
                   marginBottom: "8px",
+                  justifyContent: isLargeScreen ? "flex-start" : "center",
+                  flexWrap: "wrap",
                 }}
               >
                 <h1
                   style={{
-                    fontSize: "28px",
+                    fontSize: isLargeScreen ? "28px" : "24px",
                     fontWeight: "bold",
-                    color: "#111827",
+                    color: "#ffffff",
                     margin: 0,
                   }}
                 >
@@ -246,8 +329,8 @@ export default function ProfilePage() {
 
               <p
                 style={{
-                  fontSize: "16px",
-                  color: "#6b7280",
+                  fontSize: isLargeScreen ? "16px" : "14px",
+                  color: "#cccccc",
                   marginBottom: "16px",
                 }}
               >
@@ -256,29 +339,35 @@ export default function ProfilePage() {
 
               {/* Stats */}
               <div
-                style={{ display: "flex", gap: "24px", marginBottom: "16px" }}
+                style={{
+                  display: "flex",
+                  gap: isLargeScreen ? "24px" : "16px",
+                  marginBottom: "16px",
+                  flexWrap: "wrap",
+                  justifyContent: isLargeScreen ? "flex-start" : "center",
+                }}
               >
                 <div
                   style={{ display: "flex", alignItems: "center", gap: "6px" }}
                 >
-                  <Users size={16} color="#6b7280" />
-                  <span style={{ fontSize: "14px", color: "#6b7280" }}>
+                  <Users size={16} color="#cccccc" />
+                  <span style={{ fontSize: "14px", color: "#cccccc" }}>
                     {formatNumber(user.subscriberCount)} subscribers
                   </span>
                 </div>
                 <div
                   style={{ display: "flex", alignItems: "center", gap: "6px" }}
                 >
-                  <Play size={16} color="#6b7280" />
-                  <span style={{ fontSize: "14px", color: "#6b7280" }}>
+                  <Play size={16} color="#cccccc" />
+                  <span style={{ fontSize: "14px", color: "#cccccc" }}>
                     {videos.length} videos
                   </span>
                 </div>
                 <div
                   style={{ display: "flex", alignItems: "center", gap: "6px" }}
                 >
-                  <Calendar size={16} color="#6b7280" />
-                  <span style={{ fontSize: "14px", color: "#6b7280" }}>
+                  <Calendar size={16} color="#cccccc" />
+                  <span style={{ fontSize: "14px", color: "#cccccc" }}>
                     Joined {formatDate(user.createdAt)}
                   </span>
                 </div>
@@ -286,26 +375,37 @@ export default function ProfilePage() {
             </div>
 
             {/* Action Buttons */}
-            <div style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
+            <div
+              style={{
+                display: "flex",
+                gap: "8px",
+                flexShrink: 0,
+                flexDirection: isLargeScreen ? "row" : "column",
+                width: isLargeScreen ? "auto" : "100%",
+              }}
+            >
               <button
                 style={{
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
                   padding: "8px 16px",
-                  backgroundColor: "#f3f4f6",
-                  border: "none",
+                  backgroundColor: "#2a2a2a",
+                  color: "#ffffff",
+                  border: "1px solid #444444",
                   borderRadius: "8px",
                   cursor: "pointer",
                   fontSize: "14px",
                   fontWeight: "500",
                   transition: "background-color 0.2s",
+                  width: isLargeScreen ? "auto" : "100%",
+                  justifyContent: "center",
                 }}
                 onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#e5e7eb")
+                  (e.currentTarget.style.backgroundColor = "#3a3a3a")
                 }
                 onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#f3f4f6")
+                  (e.currentTarget.style.backgroundColor = "#2a2a2a")
                 }
               >
                 <Edit size={16} />
@@ -318,20 +418,22 @@ export default function ProfilePage() {
                   alignItems: "center",
                   gap: "8px",
                   padding: "8px 16px",
-                  backgroundColor: "#fef2f2",
-                  border: "none",
+                  backgroundColor: "#2a2a2a",
+                  border: "1px solid #444444",
                   borderRadius: "8px",
                   cursor: "pointer",
                   fontSize: "14px",
                   fontWeight: "500",
-                  color: "#dc2626",
+                  color: "#ff6b6b",
                   transition: "background-color 0.2s",
+                  width: isLargeScreen ? "auto" : "100%",
+                  justifyContent: "center",
                 }}
                 onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#fee2e2")
+                  (e.currentTarget.style.backgroundColor = "#3a3a3a")
                 }
                 onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#fef2f2")
+                  (e.currentTarget.style.backgroundColor = "#2a2a2a")
                 }
               >
                 <LogOut size={16} />
@@ -345,15 +447,16 @@ export default function ProfilePage() {
             <div
               style={{
                 padding: "16px",
-                backgroundColor: "#f9fafb",
+                backgroundColor: "#2a2a2a",
                 borderRadius: "8px",
                 marginBottom: "24px",
+                border: "1px solid #333333",
               }}
             >
               <p
                 style={{
                   fontSize: "14px",
-                  color: "#374151",
+                  color: "#cccccc",
                   lineHeight: "1.5",
                   margin: 0,
                 }}
@@ -364,8 +467,16 @@ export default function ProfilePage() {
           )}
 
           {/* Tabs */}
-          <div style={{ borderBottom: "1px solid #e5e7eb" }}>
-            <div style={{ display: "flex", gap: "32px" }}>
+          <div style={{ borderBottom: "1px solid #333333" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: isLargeScreen ? "32px" : "24px",
+                overflowX: "auto",
+                msOverflowStyle: "none",
+                scrollbarWidth: "none",
+              }}
+            >
               <button
                 onClick={() => setActiveTab("videos")}
                 style={{
@@ -375,12 +486,13 @@ export default function ProfilePage() {
                   fontSize: "14px",
                   fontWeight: "500",
                   cursor: "pointer",
-                  color: activeTab === "videos" ? "#3b82f6" : "#6b7280",
+                  color: activeTab === "videos" ? "#3b82f6" : "#cccccc",
                   borderBottom:
                     activeTab === "videos"
                       ? "2px solid #3b82f6"
                       : "2px solid transparent",
                   transition: "color 0.2s",
+                  whiteSpace: "nowrap",
                 }}
               >
                 Videos ({videos.length})
@@ -394,12 +506,13 @@ export default function ProfilePage() {
                   fontSize: "14px",
                   fontWeight: "500",
                   cursor: "pointer",
-                  color: activeTab === "about" ? "#3b82f6" : "#6b7280",
+                  color: activeTab === "about" ? "#3b82f6" : "#cccccc",
                   borderBottom:
                     activeTab === "about"
                       ? "2px solid #3b82f6"
                       : "2px solid transparent",
                   transition: "color 0.2s",
+                  whiteSpace: "nowrap",
                 }}
               >
                 About
@@ -418,26 +531,27 @@ export default function ProfilePage() {
                 style={{
                   textAlign: "center",
                   padding: "48px 24px",
-                  backgroundColor: "white",
+                  backgroundColor: "#1a1a1a",
                   borderRadius: "12px",
+                  border: "1px solid #333333",
                 }}
               >
                 <Upload
                   size={48}
-                  color="#9ca3af"
+                  color="#cccccc"
                   style={{ margin: "0 auto 16px" }}
                 />
                 <h3
                   style={{
                     fontSize: "18px",
                     fontWeight: "600",
-                    color: "#111827",
+                    color: "#ffffff",
                     marginBottom: "8px",
                   }}
                 >
                   No videos yet
                 </h3>
-                <p style={{ color: "#6b7280", fontSize: "14px" }}>
+                <p style={{ color: "#cccccc", fontSize: "14px" }}>
                   Start uploading videos to share with the community!
                 </p>
               </div>
@@ -448,16 +562,17 @@ export default function ProfilePage() {
         {activeTab === "about" && (
           <div
             style={{
-              backgroundColor: "white",
+              backgroundColor: "#1a1a1a",
               borderRadius: "12px",
-              padding: "32px",
+              padding: isLargeScreen ? "32px" : "24px",
+              border: "1px solid #333333",
             }}
           >
             <h2
               style={{
-                fontSize: "20px",
+                fontSize: isLargeScreen ? "20px" : "18px",
                 fontWeight: "600",
-                color: "#111827",
+                color: "#ffffff",
                 marginBottom: "24px",
               }}
             >
@@ -470,7 +585,7 @@ export default function ProfilePage() {
                   style={{
                     fontSize: "14px",
                     fontWeight: "600",
-                    color: "#374151",
+                    color: "#ffffff",
                     marginBottom: "8px",
                   }}
                 >
@@ -479,7 +594,7 @@ export default function ProfilePage() {
                 <p
                   style={{
                     fontSize: "14px",
-                    color: "#6b7280",
+                    color: "#cccccc",
                     lineHeight: "1.5",
                   }}
                 >
@@ -492,7 +607,7 @@ export default function ProfilePage() {
                   style={{
                     fontSize: "14px",
                     fontWeight: "600",
-                    color: "#374151",
+                    color: "#ffffff",
                     marginBottom: "8px",
                   }}
                 >
@@ -503,7 +618,7 @@ export default function ProfilePage() {
                     display: "grid",
                     gap: "8px",
                     fontSize: "14px",
-                    color: "#6b7280",
+                    color: "#cccccc",
                   }}
                 >
                   <div>Subscribers: {formatNumber(user.subscriberCount)}</div>
@@ -518,6 +633,7 @@ export default function ProfilePage() {
             </div>
           </div>
         )}
+        </div>
       </main>
     </div>
   );
