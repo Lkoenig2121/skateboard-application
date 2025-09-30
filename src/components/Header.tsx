@@ -36,7 +36,8 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [showNotificationsDropdown, setShowNotificationsDropdown] = useState(false);
+  const [showNotificationsDropdown, setShowNotificationsDropdown] =
+    useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLargeScreen, setIsLargeScreen] = useState(false);
   const router = useRouter();
@@ -114,14 +115,14 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      if (!target.closest('[data-dropdown]')) {
+      if (!target.closest("[data-dropdown]")) {
         setShowProfileDropdown(false);
         setShowNotificationsDropdown(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -164,7 +165,11 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
       >
         {/* Left: Menu + Logo */}
         <div
-          style={{ display: "flex", alignItems: "center", minWidth: "170px" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            minWidth: isLargeScreen ? "170px" : "120px",
+          }}
         >
           <button
             onClick={() => {
@@ -176,10 +181,10 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               background: isSidebarOpen ? "rgba(255,255,255,0.1)" : "none",
               border: "none",
               color: "white",
-              padding: "8px",
+              padding: isLargeScreen ? "8px" : "6px",
               borderRadius: "50%",
               cursor: "pointer",
-              marginRight: "16px",
+              marginRight: isLargeScreen ? "16px" : "8px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -208,31 +213,37 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
             <div style={{ display: "flex", alignItems: "center" }}>
               <div
                 style={{
-                  width: "32px",
-                  height: "24px",
+                  width: isLargeScreen ? "32px" : "24px",
+                  height: isLargeScreen ? "24px" : "18px",
                   backgroundColor: "#ff0000",
                   borderRadius: "4px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  marginRight: "4px",
+                  marginRight: isLargeScreen ? "4px" : "3px",
                 }}
               >
                 <div
                   style={{
                     width: 0,
                     height: 0,
-                    borderLeft: "8px solid white",
-                    borderTop: "5px solid transparent",
-                    borderBottom: "5px solid transparent",
-                    marginLeft: "2px",
+                    borderLeft: isLargeScreen
+                      ? "8px solid white"
+                      : "6px solid white",
+                    borderTop: isLargeScreen
+                      ? "5px solid transparent"
+                      : "4px solid transparent",
+                    borderBottom: isLargeScreen
+                      ? "5px solid transparent"
+                      : "4px solid transparent",
+                    marginLeft: isLargeScreen ? "2px" : "1px",
                   }}
                 />
               </div>
               <span
                 style={{
                   color: "white",
-                  fontSize: "20px",
+                  fontSize: isLargeScreen ? "20px" : "16px",
                   fontWeight: "400",
                   letterSpacing: "-0.5px",
                 }}
@@ -246,11 +257,11 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
         {/* Center: Search */}
         <div
           style={{
-            flex: 1,
-            maxWidth: "728px",
+            flex: isLargeScreen ? 1 : 0,
+            maxWidth: isLargeScreen ? "728px" : "80px",
             display: "flex",
             justifyContent: "center",
-            padding: "0 40px",
+            padding: isLargeScreen ? "0 40px" : "0 2px",
           }}
         >
           <div
@@ -269,42 +280,44 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                 placeholder="Search"
                 style={{
                   flex: 1,
-                  height: "40px",
-                  padding: "0 16px",
+                  height: isLargeScreen ? "40px" : "28px",
+                  padding: isLargeScreen ? "0 16px" : "0 8px",
                   backgroundColor: "#121212",
                   border: "1px solid #303030",
-                  borderRadius: "20px 0 0 20px",
+                  borderRadius: isLargeScreen ? "20px 0 0 20px" : "14px",
                   color: "white",
-                  fontSize: "16px",
+                  fontSize: isLargeScreen ? "16px" : "12px",
                   outline: "none",
                 }}
                 onFocus={(e) => (e.target.style.borderColor = "#1c62b9")}
                 onBlur={(e) => (e.target.style.borderColor = "#303030")}
               />
-              <button
-                type="submit"
-                style={{
-                  width: "64px",
-                  height: "40px",
-                  backgroundColor: "#222222",
-                  border: "1px solid #303030",
-                  borderLeft: "none",
-                  borderRadius: "0 20px 20px 0",
-                  color: "white",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#3f3f3f")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#222222")
-                }
-              >
-                <Search size={20} />
-              </button>
+              {isLargeScreen && (
+                <button
+                  type="submit"
+                  style={{
+                    width: "64px",
+                    height: "40px",
+                    backgroundColor: "#222222",
+                    border: "1px solid #303030",
+                    borderLeft: "none",
+                    borderRadius: "0 20px 20px 0",
+                    color: "white",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#3f3f3f")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.backgroundColor = "#222222")
+                  }
+                >
+                  <Search size={20} />
+                </button>
+              )}
             </form>
             <button
               style={{
@@ -316,7 +329,7 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                 color: "white",
                 cursor: "pointer",
                 marginLeft: "8px",
-                display: "flex",
+                display: isLargeScreen ? "flex" : "none",
                 alignItems: "center",
                 justifyContent: "center",
               }}
@@ -338,8 +351,10 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
           style={{
             display: "flex",
             alignItems: "center",
-            minWidth: "170px",
+            width: isLargeScreen ? "auto" : "80px",
+            minWidth: isLargeScreen ? "170px" : "80px",
             justifyContent: "flex-end",
+            flexShrink: 0,
           }}
         >
           <button
@@ -351,7 +366,7 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
               borderRadius: "50%",
               cursor: "pointer",
               marginRight: "8px",
-              display: "flex",
+              display: isLargeScreen ? "flex" : "none",
               alignItems: "center",
               justifyContent: "center",
             }}
@@ -367,29 +382,37 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
 
           <div style={{ position: "relative" }} data-dropdown>
             <button
-              onClick={() => setShowNotificationsDropdown(!showNotificationsDropdown)}
+              onClick={() =>
+                setShowNotificationsDropdown(!showNotificationsDropdown)
+              }
               style={{
-                background: showNotificationsDropdown ? "rgba(255,255,255,0.1)" : "none",
+                background: showNotificationsDropdown
+                  ? "rgba(255,255,255,0.1)"
+                  : "none",
                 border: "none",
                 color: "white",
                 padding: "8px",
                 borderRadius: "50%",
                 cursor: "pointer",
                 marginRight: "8px",
-                display: "flex",
+                display: isLargeScreen ? "flex" : "none",
                 alignItems: "center",
                 justifyContent: "center",
                 position: "relative",
               }}
               onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)")
+                (e.currentTarget.style.backgroundColor =
+                  "rgba(255,255,255,0.1)")
               }
               onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = showNotificationsDropdown ? "rgba(255,255,255,0.1)" : "transparent")
+                (e.currentTarget.style.backgroundColor =
+                  showNotificationsDropdown
+                    ? "rgba(255,255,255,0.1)"
+                    : "transparent")
               }
             >
               <Bell size={20} />
-              {notifications.some(n => !n.read) && (
+              {notifications.some((n) => !n.read) && (
                 <div
                   style={{
                     position: "absolute",
@@ -416,7 +439,9 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                   backgroundColor: "#1a1a1a",
                   border: "1px solid #333333",
                   borderRadius: "12px",
-                  boxShadow: isLargeScreen ? "0 4px 32px rgba(0,0,0,0.2)" : "0 2px 16px rgba(0,0,0,0.3)",
+                  boxShadow: isLargeScreen
+                    ? "0 4px 32px rgba(0,0,0,0.2)"
+                    : "0 2px 16px rgba(0,0,0,0.3)",
                   zIndex: 60,
                   marginTop: "8px",
                   maxHeight: "500px",
@@ -473,7 +498,9 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                         style={{
                           padding: "16px 20px",
                           borderBottom: "1px solid #2a2a2a",
-                          backgroundColor: notification.read ? "transparent" : "#1a1a1a",
+                          backgroundColor: notification.read
+                            ? "transparent"
+                            : "#1a1a1a",
                           cursor: "pointer",
                           transition: "background-color 0.2s",
                         }}
@@ -481,7 +508,8 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                           (e.currentTarget.style.backgroundColor = "#2a2a2a")
                         }
                         onMouseLeave={(e) =>
-                          (e.currentTarget.style.backgroundColor = notification.read ? "transparent" : "#1a1a1a")
+                          (e.currentTarget.style.backgroundColor =
+                            notification.read ? "transparent" : "#1a1a1a")
                         }
                       >
                         <div
@@ -495,7 +523,9 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                             style={{
                               width: "8px",
                               height: "8px",
-                              backgroundColor: notification.read ? "transparent" : "#3b82f6",
+                              backgroundColor: notification.read
+                                ? "transparent"
+                                : "#3b82f6",
                               borderRadius: "50%",
                               marginTop: "6px",
                               flexShrink: 0,
@@ -543,7 +573,10 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                         color: "#cccccc",
                       }}
                     >
-                      <Bell size={32} style={{ marginBottom: "12px", opacity: 0.5 }} />
+                      <Bell
+                        size={32}
+                        style={{ marginBottom: "12px", opacity: 0.5 }}
+                      />
                       <p style={{ margin: 0, fontSize: "14px" }}>
                         No notifications yet
                       </p>
@@ -584,30 +617,34 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
             )}
           </div>
 
-          <div style={{ position: "relative" }} data-dropdown>
+          <div
+            style={{
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            data-dropdown
+          >
             <button
               onClick={() => setShowProfileDropdown(!showProfileDropdown)}
               style={{
-                width: isLargeScreen ? "32px" : "28px",
-                height: isLargeScreen ? "32px" : "28px",
+                width: "32px",
+                height: "32px",
                 backgroundColor: isLoggedIn ? "#3ea6ff" : "#333333",
-                border: isLargeScreen
-                  ? "2px solid rgba(255,255,255,0.1)"
-                  : "1px solid rgba(255,255,255,0.1)",
+                border: "2px solid rgba(255,255,255,0.1)",
                 borderRadius: "50%",
                 color: "white",
                 cursor: "pointer",
-                fontSize: isLargeScreen ? "14px" : "12px",
+                fontSize: "14px",
                 fontWeight: "500",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 transition: "all 0.2s ease",
-                boxShadow: isLargeScreen
-                  ? "0 2px 8px rgba(0,0,0,0.3)"
-                  : "0 1px 4px rgba(0,0,0,0.2)",
-                minWidth: "28px",
-                minHeight: "28px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                minWidth: "32px",
+                minHeight: "32px",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor = isLoggedIn
@@ -620,7 +657,7 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                   : "#333333")
               }
             >
-              {isLoggedIn ? "U" : <User size={isLargeScreen ? 16 : 14} />}
+              {isLoggedIn ? "U" : <User size={16} />}
             </button>
 
             {showProfileDropdown && (
@@ -1114,7 +1151,7 @@ export default function Header({ onSearch, onSidebarToggle }: HeaderProps) {
                 <span style={{ fontSize: "14px" }}>Skate Park</span>
               )}
             </Link>
-      </div>
+          </div>
 
           {/* Profile Section */}
           <div
